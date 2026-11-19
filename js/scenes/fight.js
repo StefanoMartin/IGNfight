@@ -81,7 +81,7 @@ function endRound() {
   if (w) {
     w.wins++;
     if (w.state !== 'ko') { w.state = 'win'; w.t = 0; w.data = {}; w.atk = null; w.vx = 0; w.say = { s: pick(w.ch.win), t: 0, life: 120 }; }
-    say(w.ch.spoken + ' wins', 'en-US', .5, .95);
+    say(w.ch.spoken + ' wins', 'en-US', .5, .95); musicStinger();
   } else { A.wins++; B.wins++; say('Draw'); }
 }
 

@@ -12,10 +12,12 @@
 <!-- Classic scripts (not ES modules) so the game also runs when opened straight from disk.
      Load order matters: each file only uses what the files above it define. -->
 
-<!-- Core: constants, input, audio, canvas helpers -->
+<!-- Core: constants, version, input, sound effects, music, canvas helpers -->
 <script src="js/core/utils.js"></script>
+<script src="js/core/version.js"></script>
 <script src="js/core/input.js"></script>
 <script src="js/core/audio.js"></script>
+<script src="js/core/music.js"></script>
 <script src="js/render/draw-helpers.js"></script>
 
 <!-- Fighter registry + one file per fighter -->

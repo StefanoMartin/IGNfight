@@ -22,6 +22,7 @@ function draw() {
   ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.filter = 'none'; ctx.globalAlpha = 1;
   ctx.clearRect(0, 0, W, H);
   SCENES[game.scene].draw();
+  drawVersion();
 }
 
 let lastTime = 0, acc = 0;

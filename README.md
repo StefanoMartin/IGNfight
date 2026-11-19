@@ -1,5 +1,7 @@
 # 🥊 Forum Fighters — IGN Italia Community Edition
 
+**Version 0.4.0** · [Changelog](CHANGELOG.md)
+
 A small Street Fighter–style fighting game starring members of the IGN Italia forum.
 It runs in the browser with plain JavaScript and canvas: no libraries, no build step, no image files.
 
@@ -15,7 +17,7 @@ It runs in the browser with plain JavaScript and canvas: no libraries, no build 
 - Punches, kicks, crouching attacks, sweeps, air attacks and blocking
 - A **skill** on a cooldown and a **super** that uses a full meter for every fighter
 - Combos: a punch or kick that lands can be cancelled into a skill or super
-- Chiptune music, sound effects and an announcer voice (browser speech synthesis)
+- Synthesized chiptune soundtrack (title, select and fight themes; the fight theme speeds up in danger moments), sound effects and an announcer voice
 
 ## Controls
 
@@ -62,8 +64,10 @@ css/style.css               page layout (the game itself is drawn on a canvas)
 js/
   core/
     utils.js                constants (screen size, ground, walls) and math helpers
+    version.js              game version + the corner label
     input.js                keyboard + gamepad mapping
-    audio.js                synthesized sound effects, music loop, announcer voice
+    audio.js                synthesized sound effects, announcer voice
+    music.js                step sequencer + synth voices for the soundtrack
   render/
     draw-helpers.js         canvas primitives (outlined shapes, titles, text wrap)
     fighter-render.js       poses -> skeleton -> drawn body, portraits
@@ -105,6 +109,16 @@ The scripts are plain `<script>` tags (not ES modules) so the game also works wh
    - **ai**: preferred `range`, aggression, and when to use the skill and super
    - **optional hooks** for special mechanics (see the comment at the top of `js/game/registry.js`): e.g. `haste` (Pat's hype), `movesFor` (master94ga's stances), `doubleJump` / `airSkill` (Nkc90), `punishBonus` (Mao-gp)
 3. Add `<script src="js/characters/<new-name>.js"></script>` to `index.html` next to the other characters. The select screen adapts to the roster size automatically.
+
+## Versioning
+
+The game follows [semantic versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`), shown in the bottom-right corner of every screen:
+
+- **MAJOR**: big milestones or breaking changes (1.0.0 = first "complete" release)
+- **MINOR**: new features: fighters, modes, music, visuals
+- **PATCH**: bug fixes and balance tweaks
+
+The version lives in `js/core/version.js`; every release gets an entry in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
