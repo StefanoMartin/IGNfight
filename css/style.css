@@ -1,0 +1,23 @@
+/* Forum Fighters — page shell. The game itself is drawn on the canvas. */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #07040d;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Keep the 960x540 canvas at 16:9, as large as the window allows */
+canvas {
+  display: block;
+  width: min(100vw, 177.78vh);
+  height: min(56.25vw, 100vh);
+  outline: none;
+  touch-action: none;
+}

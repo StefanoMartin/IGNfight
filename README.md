@@ -1,9 +1,9 @@
 # 🥊 Forum Fighters — IGN Italia Community Edition
 
 A small Street Fighter–style fighting game starring members of the IGN Italia forum.
-It runs in the browser: one HTML file of plain JavaScript and canvas, with no libraries, engine or image files.
+It runs in the browser with plain JavaScript and canvas: no libraries, no build step, no image files.
 
-### ▶️ [Play it on GitHub Pages](https://stefanomartin.github.io/IGNfight/forum-fighters.html)
+### ▶️ [Play it on GitHub Pages](https://stefanomartin.github.io/IGNfight/)
 
 ![Fight screenshot](docs/screenshot.png)
 
@@ -48,14 +48,54 @@ More fighters coming soon.
 
 ## Run it locally
 
-No build step: download `forum-fighters.html` and open it in a modern browser (Chrome, Edge or Firefox).
+No build step and no server needed: clone or download the repo and open `index.html` in a modern browser (Chrome, Edge or Firefox).
 
 ## Project structure
 
 ```
-forum-fighters.html   # the whole game: engine, characters, stage, audio
-docs/                 # screenshots used in this README
+index.html                  entry point: loads the CSS and the scripts in order
+css/style.css               page layout (the game itself is drawn on a canvas)
+js/
+  core/
+    utils.js                constants (screen size, ground, walls) and math helpers
+    input.js                keyboard + gamepad mapping
+    audio.js                synthesized sound effects, music loop, announcer voice
+  render/
+    draw-helpers.js         canvas primitives (outlined shapes, titles, text wrap)
+    fighter-render.js       poses -> skeleton -> drawn body, portraits
+    stage.js                the living-room background
+  game/
+    registry.js             registerFighter() and the normal moves (punch, kick, ...)
+    state.js                game state, Fighter class, particles
+    combat.js               hitboxes, hits, blocking, armor, K.O., skill/super entry
+    projectiles.js          generic projectile system
+    fighter.js              per-frame fighter state machine and physics
+    ai.js                   CPU opponent
+    effects.js              particles, floating text, speech bubbles
+  characters/               one file per fighter: stats, look, poses, skill, super
+    talpaman.js
+    gaara80.js
+    menodzero.js
+    the-dark-player.js
+    kyle-sr84.js
+  scenes/
+    title.js  select.js  fight.js  result.js  hud.js
+  main.js                   fixed 60 fps update loop
+docs/                       screenshots used in this README
 ```
+
+The scripts are plain `<script>` tags (not ES modules) so the game also works when opened straight from disk. Their order in `index.html` matters: each file only uses what the files above it define.
+
+## Adding a new fighter
+
+1. Copy one of the files in `js/characters/` (for example `gaara80.js`) to `js/characters/<new-name>.js`.
+2. Change the data in `registerFighter({...})`:
+   - **identity**: `id` (unique), `name`, `spoken` (for the announcer), `tag`, `style`, `win` quotes
+   - **stats**: `hp`, `spd`, `jump`, `kbm` (knockback taken), `pow`, `frameData` (speed / damage / reach of normal moves)
+   - **look**: colours and the `torso`, `head`, `hand`, `foot` drawing functions (plus optional `behind`, `armDeco`, `front`)
+   - **moves**: `skillMove(f, o, t, d)` and `superMove(f, o, t, d)` run once per frame while the move is active (`t` = frame number, `d` = scratch data); call `toIdle(f)` when done
+   - **ai**: preferred `range`, aggression, and when to use the skill and super
+3. Add `<script src="js/characters/<new-name>.js"></script>` to `index.html` next to the other characters. The select screen adapts to the roster size automatically.
 
 ---
 

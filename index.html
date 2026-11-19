@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Forum Fighters</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<canvas id="c" width="960" height="540" tabindex="0"></canvas>
+
+<!-- Classic scripts (not ES modules) so the game also runs when opened straight from disk.
+     Load order matters: each file only uses what the files above it define. -->
+
+<!-- Core: constants, input, audio, canvas helpers -->
+<script src="js/core/utils.js"></script>
+<script src="js/core/input.js"></script>
+<script src="js/core/audio.js"></script>
+<script src="js/render/draw-helpers.js"></script>
+
+<!-- Fighter registry + one file per fighter -->
+<script src="js/game/registry.js"></script>
+<script src="js/characters/talpaman.js"></script>
+<script src="js/characters/gaara80.js"></script>
+<script src="js/characters/menodzero.js"></script>
+<script src="js/characters/the-dark-player.js"></script>
+<script src="js/characters/kyle-sr84.js"></script>
+
+<!-- Rendering -->
+<script src="js/render/fighter-render.js"></script>
+<script src="js/render/stage.js"></script>
+
+<!-- Game logic -->
+<script src="js/game/state.js"></script>
+<script src="js/game/combat.js"></script>
+<script src="js/game/projectiles.js"></script>
+<script src="js/game/fighter.js"></script>
+<script src="js/game/ai.js"></script>
+<script src="js/game/effects.js"></script>
+
+<!-- Scenes -->
+<script src="js/scenes/hud.js"></script>
+<script src="js/scenes/title.js"></script>
+<script src="js/scenes/select.js"></script>
+<script src="js/scenes/fight.js"></script>
+<script src="js/scenes/result.js"></script>
+
+<!-- Main loop -->
+<script src="js/main.js"></script>
+</body>
+</html>
