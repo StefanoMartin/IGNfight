@@ -60,7 +60,7 @@ function talpaSpawnMeme(f) {
 registerFighter({
   id: 'talpa', name: 'TALPAMAN', spoken: 'Talpaman', tag: 'The Stage Police', style: 'All-Rounder / Trap Setter',
   hp: 1000, spd: 4.3, jump: 15.5, kbm: 1, scale: .95, pow: 1,
-  color: '#5d4c44', accent: '#f0a3a8', uiColor: '#f0a3a8',
+  color: '#6a5146', accent: '#f0a3a8', uiColor: '#f0a3a8',
   rig: { ul: 32, ll: 32, tl: 52, au: 27, al: 25, hr: 17 },
   frameData: { spd: 1, dmg: 1 },
   lowDuringSkill: true,
@@ -108,7 +108,8 @@ registerFighter({
   },
 
   look: {
-    lw: 14, aw: 11, legC: '#5d4c44', legD: '#45372f', armC: '#5d4c44', armD: '#45372f',
+    tw: [15, 17], // torso half-widths at hip / shoulders (for the cel shading pass)
+    lw: 14, aw: 11, legC: '#6a5146', legD: '#45372f', armC: '#6a5146', armD: '#45372f',
     behind(f, P, J) { // pixel Ban Hammer on the back
       const m = lerp(J.hip, J.sh, .55);
       ctx.save(); ctx.translate(m.x - 13, m.y); ctx.rotate(-.45 + P.lean);
@@ -119,7 +120,7 @@ registerFighter({
       ctx.restore();
     },
     torso(f, P, J) {
-      quad(J.hip, J.sh, 15, 17, '#5d4c44');
+      quad(J.hip, J.sh, 15, 17, '#6a5146');
       const c = lerp(J.hip, J.sh, .45); ell(c.x + 6, c.y, 8, 16, P.lean, '#9a8573', 0);
       line({ x: J.sh.x + 9, y: J.sh.y + 3 }, { x: J.hip.x - 13, y: J.hip.y - 3 }, 4, '#6b3f1e'); // satchel strap
       ctx.save(); ctx.translate(J.hip.x - 17, J.hip.y + 1); // satchel full of printed memes
@@ -129,7 +130,7 @@ registerFighter({
     },
     head(f, P, J) {
       const c = J.hc;
-      circ(c.x - 12, c.y - 12, 5, '#5d4c44'); ell(c.x - 2, c.y, 18, 16, 0, '#5d4c44');
+      circ(c.x - 12, c.y - 12, 5, '#6a5146'); ell(c.x - 2, c.y, 18, 16, 0, '#6a5146');
       ell(c.x + 17, c.y + 5, 13, 7, .12, '#7a675b'); circ(c.x + 30, c.y + 6, 4.5, '#f39aa6'); // snout + nose
       ctx.strokeStyle = '#d9cbbd'; ctx.lineWidth = 1;
       for (const k of [-3, 0, 3]) { ctx.beginPath(); ctx.moveTo(c.x + 22, c.y + 8); ctx.lineTo(c.x + 35, c.y + 10 + k * 1.6); ctx.stroke(); }

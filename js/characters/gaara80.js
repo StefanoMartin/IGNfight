@@ -100,6 +100,7 @@ registerFighter({
   },
 
   look: {
+    tw: [15, 18], // torso half-widths at hip / shoulders (for the cel shading pass)
     lw: 13, aw: 12, legC: '#30343c', legD: '#23262d', armC: '#7cc6ee', armD: '#5c9fc7',
     torso(f, P, J) { // retro 80s windbreaker
       quad(J.hip, J.sh, 15, 18, '#7cc6ee');
@@ -117,7 +118,8 @@ registerFighter({
       ctx.lineTo(c.x - 9, c.y - 15); ctx.lineTo(c.x - 18, c.y - 20); ctx.lineTo(c.x - 16, c.y - 8); ctx.lineTo(c.x - 21, c.y - 4);
       ctx.lineTo(c.x - 15, c.y + 4); ctx.lineTo(c.x - 8, c.y - 6); ctx.lineTo(c.x + 4, c.y - 8); ctx.closePath();
       ctx.fillStyle = '#3a2418'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
-      ell(c.x + 8, c.y - 2, 4, 4.5, 0, '#fff', 1.5); circ(c.x + 9.5, c.y - 2, 2, '#111', 0);
+      line({ x: c.x - 12, y: c.y - 12 }, { x: c.x - 2, y: c.y - 17 }, 2, 'rgba(255,200,150,.45)'); // hair shine
+      ell(c.x + 8, c.y - 2, 4, 4.5, 0, '#fff', 1.5); circ(c.x + 9.5, c.y - 2, 2, '#111', 0); circ(c.x + 10.3, c.y - 3, .9, '#fff', 0);
       line({ x: c.x + 3, y: c.y - 9 }, { x: c.x + 13, y: c.y - 7 }, 2.5, '#2a170e');
       if (['attack', 'skill', 'super'].includes(f.state)) ell(c.x + 10, c.y + 8, 4, 4, 0, '#5a1010', 1.5); // shouting
       else line({ x: c.x + 6, y: c.y + 8 }, { x: c.x + 13, y: c.y + 7 }, 2, '#5a2a1a');

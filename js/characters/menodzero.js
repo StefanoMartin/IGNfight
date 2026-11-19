@@ -47,7 +47,7 @@ function menoSlash(x, y, face) {
 registerFighter({
   id: 'meno', name: 'menoDZero', spoken: 'Meno D Zero', tag: 'The Drama King', style: 'Heavy Counter / Stance',
   hp: 1100, spd: 3.5, jump: 14, kbm: .8, pow: 1.3,
-  color: '#262a40', accent: '#d1222f', uiColor: '#ff4a55',
+  color: '#2a2f5c', accent: '#d1222f', uiColor: '#ff4a55',
   rig: { ul: 38, ll: 38, tl: 56, au: 30, al: 28, hr: 15 },
   frameData: { spd: 1.2, dmg: 1.3 },
   skill: 'PARRY STANCE', skillDesc: 'Catches an incoming attack and answers with a counter-slash.', skillCooldown: 35,
@@ -99,7 +99,8 @@ registerFighter({
   },
 
   look: {
-    lw: 11, aw: 11, legC: '#181a2b', legD: '#10121e', armC: '#262a40', armD: '#1b1e30',
+    tw: [14, 18], // torso half-widths at hip / shoulders (for the cel shading pass)
+    lw: 11, aw: 11, legC: '#181a2b', legD: '#10121e', armC: '#2a2f5c', armD: '#1d2045',
     glow: f => f.state === 'mcounter' || !!f.data.exiting,
     behind(f, P, J) { // dramatic red scarf
       const s = J.sh, w = Math.sin(f.anim * .18);
@@ -108,7 +109,7 @@ registerFighter({
       ctx.lineWidth = 14; ctx.strokeStyle = OL; ctx.stroke(); ctx.lineWidth = 9; ctx.strokeStyle = '#d1222f'; ctx.stroke();
     },
     torso(f, P, J) { // tailored blazer
-      quad(J.hip, J.sh, 14, 18, '#262a40');
+      quad(J.hip, J.sh, 14, 18, '#2a2f5c');
       const a = lerp(J.hip, J.sh, .55);
       ctx.beginPath(); ctx.moveTo(J.sh.x + 2, J.sh.y); ctx.lineTo(J.sh.x + 12, J.sh.y + 2); ctx.lineTo(a.x + 6, a.y); ctx.closePath();
       ctx.fillStyle = '#eee'; ctx.fill();
@@ -124,6 +125,7 @@ registerFighter({
       ctx.quadraticCurveTo(c.x - 19, c.y - 6, c.x - 14, c.y + 6); ctx.lineTo(c.x - 6, c.y - 4);
       ctx.quadraticCurveTo(c.x + 2, c.y - 9, c.x + 12, c.y - 9);
       ctx.fillStyle = '#141414'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
+      line({ x: c.x - 8, y: c.y - 14 }, { x: c.x + 4, y: c.y - 15 }, 2, 'rgba(160,180,255,.55)'); // hair shine
       rr(c.x - 1, c.y - 6, 19, 7, 2, '#050505', 0); line({ x: c.x, y: c.y - 4 }, { x: c.x - 11, y: c.y - 3 }, 2, '#050505'); // indoor sunglasses
       ctx.fillStyle = '#d1222f'; ctx.fillRect(c.x + 10, c.y - 5, 4, 1.5);
       line({ x: c.x + 5, y: c.y + 9 }, { x: c.x + 13, y: c.y + 6 }, 2, '#7a3a2a'); // smug smirk

@@ -67,42 +67,62 @@ function rig(f, P) {
   return { hip, fk, ff, bk, bf, sh, fs, bs, fe, fh, be, bh, hc };
 }
 
-/** Back limbs -> torso -> front leg -> head -> front arm */
+const LIMB_BULK = 1.25;  // thicker, rounder limbs
+const HEAD_SCALE = 1.15; // slightly bigger anime-style heads
+
+/** Back limbs -> torso -> front leg -> head -> front arm (cel shading on) */
 function drawBody(f, P, J) {
-  const S = f.ch.look;
+  const S = f.ch.look, tw = S.tw || [15, 18];
+  const lw = S.lw * LIMB_BULK, aw = S.aw * LIMB_BULK;
+  CEL = true;
   if (S.behind) S.behind(f, P, J);
-  limb([J.hip, J.bk, J.bf], S.lw, S.legD); S.foot(J.bk, J.bf, false);
-  limb([J.bs, J.be, J.bh], S.aw, S.armD); if (S.armDeco) S.armDeco(f, J.bs, J.be, J.bh, false); if (!P.pb) S.hand(J.be, J.bh, false);
-  S.torso(f, P, J);
-  limb([J.hip, J.fk, J.ff], S.lw, S.legC); S.foot(J.fk, J.ff, true);
+  limb([J.hip, J.bk, J.bf], lw, S.legD); S.foot(J.bk, J.bf, false);
+  limb([J.bs, J.be, J.bh], aw, S.armD); if (S.armDeco) S.armDeco(f, J.bs, J.be, J.bh, false); if (!P.pb) S.hand(J.be, J.bh, false);
+  S.torso(f, P, J); celTorso(J.hip, J.sh, tw[0], tw[1]);
+  limb([J.hip, J.fk, J.ff], lw, S.legC); S.foot(J.fk, J.ff, true);
+  ctx.save(); ctx.translate(J.hc.x, J.hc.y); ctx.scale(HEAD_SCALE, HEAD_SCALE); ctx.translate(-J.hc.x, -J.hc.y - 2);
   S.head(f, P, J);
-  limb([J.fs, J.fe, J.fh], S.aw, S.armC); if (S.armDeco) S.armDeco(f, J.fs, J.fe, J.fh, true);
+  ctx.restore();
+  limb([J.fs, J.fe, J.fh], aw, S.armC); if (S.armDeco) S.armDeco(f, J.fs, J.fe, J.fh, true);
   if (S.front) S.front(f, P, J);
   if (!P.pf) S.hand(J.fe, J.fh, true);
+  CEL = false;
+}
+
+/** Draws the body at (x, y) with an optional extra CSS filter and opacity (used for afterimages) */
+function drawFighterAt(f, P, J, x, y, extraFilter, alpha) {
+  ctx.save();
+  if (f.data.sink) { ctx.beginPath(); ctx.rect(0, 0, W, GY + 2); ctx.clip(); } // sinking into the floor
+  ctx.translate(x, y + (f.data.sink || 0)); ctx.scale(f.face * f.ch.scale, f.ch.scale);
+  if (P.rot) { ctx.translate(0, -16); ctx.rotate(P.rot); }               // lying on the floor
+  if (f.rot) { ctx.translate(0, -75); ctx.rotate(f.rot); ctx.translate(0, 75); } // spun by a throw
+  let fl = extraFilter || '';
+  if (f.alt) fl += 'hue-rotate(160deg) ';                                  // mirror match palette
+  if (!extraFilter && f.flash > 0 && (f.flash & 2)) fl = 'brightness(0) invert(1) '; // manga white hit flash
+  if (!extraFilter && f.ch.look.glow && f.ch.look.glow(f)) fl += 'drop-shadow(0 0 7px #ff2a3a) ';
+  if (f.meter >= 100 && game.scene === 'fight' && !extraFilter) fl += 'drop-shadow(0 0 5px ' + f.ch.accent + ') ';
+  if (fl) ctx.filter = fl;
+  if (alpha != null) ctx.globalAlpha = alpha;
+  drawBody(f, P, J);
+  ctx.restore();
 }
 
 function drawFighter(f) {
   if (f.data.under) { drawMound(f); return; }
   // ground shadow (+ glow when the super meter is full)
   const k = Math.max(.3, 1 - (GY - f.y) / 300);
-  ctx.fillStyle = 'rgba(0,0,0,.38)'; ctx.beginPath(); ctx.ellipse(f.x, GY + 3, 38 * k * f.ch.scale, 8 * k, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(f.x, GY + 3, 38 * k * f.ch.scale, 8 * k, 0, 0, Math.PI * 2); ctx.fill();
   if (game.scene === 'fight' && f.meter >= 100 && !['ko', 'knockdown'].includes(f.state)) {
     ctx.save(); ctx.globalAlpha = .35 + .2 * Math.sin(frame * .2); ctx.fillStyle = f.ch.accent;
     ctx.beginPath(); ctx.ellipse(f.x, GY + 3, 52, 12, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
   }
   const P = getPose(f), J = rig(f, P);
-  ctx.save();
-  if (f.data.sink) { ctx.beginPath(); ctx.rect(0, 0, W, GY + 2); ctx.clip(); } // sinking into the floor
-  ctx.translate(f.x, f.y + (f.data.sink || 0)); ctx.scale(f.face * f.ch.scale, f.ch.scale);
-  if (P.rot) { ctx.translate(0, -16); ctx.rotate(P.rot); }               // lying on the floor
-  if (f.rot) { ctx.translate(0, -75); ctx.rotate(f.rot); ctx.translate(0, 75); } // spun by a throw
-  let fl = '';
-  if (f.alt) fl += 'hue-rotate(160deg) ';                       // mirror match palette
-  if (f.flash > 0 && (f.flash & 2)) fl += 'brightness(2.4) ';   // hit flash
-  if (f.ch.look.glow && f.ch.look.glow(f)) fl += 'drop-shadow(0 0 7px #ff2a3a) ';
-  if (fl) ctx.filter = fl;
-  drawBody(f, P, J);
-  ctx.restore();
+  // afterimages when moving fast
+  const tr = f.trail || [];
+  if (game.scene === 'fight' && (Math.abs(f.vx) > 7 || f.state === 'mcounter') && tr.length > 6) {
+    [[6, .14], [4, .2], [2, .28]].forEach(([i, a]) => drawFighterAt(f, P, J, tr[i].x, tr[i].y, 'brightness(1.3) saturate(2.5) hue-rotate(' + (i * 40) + 'deg) ', a));
+  }
+  drawFighterAt(f, P, J, f.x, f.y);
 }
 
 /** Dirt mound shown while a fighter is underground (Talpaman's Burrow) */
@@ -116,10 +136,14 @@ function drawMound(f) {
 function drawPortrait(ch, x, y, s, flip, alt) {
   ctx.save(); rr(x, y, s, s, 6, '#1c1030', 0); ctx.beginPath(); ctx.rect(x, y, s, s); ctx.clip();
   const g = ctx.createLinearGradient(x, y, x, y + s); g.addColorStop(0, ch.accent); g.addColorStop(1, '#1c1030');
-  ctx.globalAlpha = .55; ctx.fillStyle = g; ctx.fillRect(x, y, s, s); ctx.globalAlpha = 1;
+  ctx.globalAlpha = .55; ctx.fillStyle = g; ctx.fillRect(x, y, s, s);
+  ctx.globalAlpha = .18; ctx.fillStyle = halftone(); ctx.fillRect(x, y + s * .45, s, s);      // screen tone
+  ctx.globalAlpha = .14; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;                          // speed lines
+  for (let i = 0; i < 7; i++) { const o = (i * 23 + 7) % s; ctx.beginPath(); ctx.moveTo(x + o - s * .3, y + s); ctx.lineTo(x + o + s * .3, y); ctx.stroke(); }
+  ctx.globalAlpha = 1;
   ctx.translate(x + s / 2, y + s * .6); const k = s / 50; ctx.scale((flip ? -1 : 1) * k, k);
   if (alt) ctx.filter = 'hue-rotate(160deg)';
   const fake = { anim: frame, state: 'idle', ch, data: {}, face: 1 }, P = P0(), J = { hc: { x: -5, y: -6 }, sh: { x: -5, y: 16 }, hip: { x: -5, y: 80 } };
-  quad(J.hip, J.sh, 18, 21, ch.color); ch.look.head(fake, P, J);
+  CEL = true; quad(J.hip, J.sh, 18, 21, ch.color); celTorso(J.hip, J.sh, 18, 21); ch.look.head(fake, P, J); CEL = false;
   ctx.restore();
 }

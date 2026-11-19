@@ -63,7 +63,7 @@ function hitRes(a, d, m, box, dir) {
     d.state = 'block'; d.t = 0; d.bs = m.bs || 10; d.vx = dir * (m.kb || 3) * .8; d.atk = null;
     hurtHP(d, m.dmg * (m.super ? .2 : .06)); // chip damage
     a.meter += 4; d.meter += 6;
-    SFX.block(); spark(sx, sy, '#8fd3ff', 8); hitstop(4);
+    SFX.block(); spark(sx, sy, '#8fd3ff', 8); impactFx(sx, sy, false, '#8fd3ff', true); hitstop(4);
     checkKO(d, a); return 'block';
   }
 
@@ -86,6 +86,8 @@ function hitRes(a, d, m, box, dir) {
   const big = dm >= 60;
   hitstop(big ? 9 : 6); game.shake = Math.max(game.shake, big ? 7 : 3);
   spark(sx, sy, big ? '#ffd23a' : '#fff', big ? 16 : 9);
+  impactFx(sx, sy, big, big ? '#ff5a1e' : a.ch.accent);
+  if (big || Math.random() < .35) sfxWord(sx + rand(-30, 30), sy - 50, big);
   (SFX[m.snd] || SFX.light)();
   if (a.combo >= 2) game.combo[a.idx] = { n: a.combo, t: 70 };
   checkKO(d, a);

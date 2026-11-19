@@ -101,7 +101,7 @@ function darkSpawnWall(f) {
 registerFighter({
   id: 'dark', name: 'the.dark.player', spoken: 'The dark player', tag: 'The Fact-Checker', style: 'Zoner / Technical',
   hp: 950, spd: 4, jump: 14.5, kbm: 1, pow: .95,
-  color: '#1f232b', accent: '#3bff7f', uiColor: '#3bff7f',
+  color: '#232a3d', accent: '#3bff7f', uiColor: '#3bff7f',
   frameData: { spd: 1.08, dmg: .95, reach: 38 },
   skill: 'CODE THROW', skillDesc: 'Hurls a line of raw code across the screen.', skillCooldown: 55,
   super: 'WALL OF TEXT', superSay: 'Wall of text!', superDesc: 'A towering wall of paragraphs slides across and crushes the foe into the corner.',
@@ -127,10 +127,11 @@ registerFighter({
   },
 
   look: {
-    lw: 12, aw: 12, legC: '#121419', legD: '#0c0d11', armC: '#1f232b', armD: '#171a20',
+    tw: [15, 18], // torso half-widths at hip / shoulders (for the cel shading pass)
+    lw: 12, aw: 12, legC: '#121419', legD: '#0c0d11', armC: '#232a3d', armD: '#191d2b',
     torso(f, P, J) { // dark hoodie
-      quad(J.hip, J.sh, 15, 18, '#1f232b');
-      quad(lerp(J.hip, J.sh, .1), lerp(J.hip, J.sh, .35), 13, 13, '#171a20', 1.5);
+      quad(J.hip, J.sh, 15, 18, '#232a3d');
+      quad(lerp(J.hip, J.sh, .1), lerp(J.hip, J.sh, .35), 13, 13, '#191d2b', 1.5);
       line({ x: J.sh.x + 5, y: J.sh.y + 2 }, { x: J.sh.x + 7, y: J.sh.y + 22 }, 1.5, '#ddd');
       line({ x: J.sh.x - 2, y: J.sh.y + 2 }, { x: J.sh.x, y: J.sh.y + 20 }, 1.5, '#ddd');
       const c = lerp(J.hip, J.sh, .62);
@@ -139,7 +140,7 @@ registerFighter({
     },
     head(f, P, J) {
       const c = J.hc;
-      ell(c.x - 4, c.y - 1, 19, 21, 0, '#1f232b'); ell(c.x + 6, c.y + 2, 11, 14, 0, '#c99a7c', 2); // hood + face
+      ell(c.x - 4, c.y - 1, 19, 21, 0, '#232a3d'); ell(c.x + 6, c.y + 2, 11, 14, 0, '#c99a7c', 2); // hood + face
       ctx.beginPath(); ctx.moveTo(c.x - 4, c.y - 12); ctx.quadraticCurveTo(c.x + 8, c.y - 16, c.x + 16, c.y - 8); ctx.lineTo(c.x + 4, c.y - 6); ctx.closePath();
       ctx.fillStyle = '#14161a'; ctx.fill();
       ctx.fillStyle = 'rgba(59,255,127,.35)'; ctx.fillRect(c.x + 5, c.y - 5, 11, 8); // thick-rimmed glasses

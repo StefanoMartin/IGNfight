@@ -63,7 +63,7 @@ function kyleSpawnBox(f, rift, big) {
 registerFighter({
   id: 'kyle', name: 'Kyle_SR84', spoken: 'Kyle S R eighty four', tag: 'The Arcade Veteran', style: 'Slow & Heavy Grappler',
   hp: 1250, spd: 3, jump: 13, kbm: .6, scale: 1.06, pow: 1.4,
-  color: '#3d63a0', accent: '#d82222', uiColor: '#ff4a4a',
+  color: '#2f6fd6', accent: '#d82222', uiColor: '#ff4a4a',
   rig: { ul: 38, ll: 37, tl: 60, au: 32, al: 30, hr: 17 },
   frameData: { spd: 1.25, dmg: 1.4 },
   armor: true, bodyWidth: 30,
@@ -109,7 +109,8 @@ registerFighter({
   },
 
   look: {
-    lw: 17, aw: 15, legC: '#2b4675', legD: '#213760', armC: '#cf9466', armD: '#b07a50',
+    tw: [19, 25], // torso half-widths at hip / shoulders (for the cel shading pass)
+    lw: 17, aw: 15, legC: '#2c4f8c', legD: '#223c6c', armC: '#cf9466', armD: '#b07a50',
     behind(f, P, J) { // headband tails
       const c = J.hc, w = Math.sin(f.anim * .2);
       ctx.lineCap = 'round';
@@ -119,14 +120,14 @@ registerFighter({
       }
     },
     torso(f, P, J) { // denim vest with retro patches over a white tee
-      quad(J.hip, J.sh, 19, 25, '#3d63a0'); quad(J.hip, J.sh, 6, 10, '#ece6da', 0);
+      quad(J.hip, J.sh, 19, 25, '#2f6fd6'); quad(J.hip, J.sh, 6, 10, '#ece6da', 0);
       const patch = (t, dx, col, round) => { const c = lerp(J.hip, J.sh, t); if (round) circ(c.x + dx, c.y, 4.5, col, 1.5); else rr(c.x + dx - 4.5, c.y - 4, 9, 8, 1, col, 1.5); };
       patch(.7, 14, '#e33', 1); patch(.45, 15, '#fc2', 0); patch(.25, -15, '#3c6', 0); patch(.75, -16, '#f80', 1);
     },
     head(f, P, J) {
       const c = J.hc;
       rr(c.x - 15, c.y - 17, 32, 35, 9, '#cf9466'); rr(c.x - 16, c.y - 20, 30, 10, 6, '#5a3a22'); rr(c.x - 16, c.y - 12, 33, 7, 2, '#d82222');
-      ell(c.x + 9, c.y - 1, 3.5, 3.5, 0, '#fff', 1.2); circ(c.x + 10, c.y - 1, 1.8, '#111', 0);
+      ell(c.x + 9, c.y - 1, 3.5, 3.5, 0, '#fff', 1.2); circ(c.x + 10, c.y - 1, 1.8, '#111', 0); circ(c.x + 10.6, c.y - 1.8, .7, '#fff', 0);
       line({ x: c.x + 3, y: c.y - 6 }, { x: c.x + 15, y: c.y - 5 }, 3, '#3a2414');
       ctx.fillStyle = 'rgba(60,35,20,.45)'; for (let i = 0; i < 9; i++) ctx.fillRect(c.x - 2 + i * 2, c.y + 9 + (i % 2) * 2, 1.5, 1.5); // stubble
       line({ x: c.x + 7, y: c.y + 12 }, { x: c.x + 15, y: c.y + 12 }, 2, '#5a2a1a');

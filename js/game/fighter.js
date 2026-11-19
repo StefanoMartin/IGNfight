@@ -67,6 +67,7 @@ function updFighter(f, o) {
     if (f.y >= GY) { f.y = GY; const bounced = f.vy > 0 && land(f); if (!bounced) f.vy = 0; }
   }
   f.x = clamp(f.x, LW, RW);
+  f.trail.unshift({ x: f.x, y: f.y }); if (f.trail.length > 8) f.trail.pop(); // for afterimages
 }
 
 /** Fighters can't overlap on the ground */

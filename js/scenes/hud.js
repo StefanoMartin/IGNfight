@@ -11,7 +11,8 @@ function drawHUD() {
     ctx.strokeStyle = '#ffd23a'; ctx.lineWidth = 3; ctx.strokeRect(L ? 12 : 878, 10, 70, 70);
     txt(f.ch.name, L ? bx + 2 : bx + bw - 2, 17, 19, '#fff', L ? 'left' : 'right', FONT, 4);
 
-    // health bar (red part = recent damage draining away)
+    // health bar (red part = recent damage draining away), slanted for a dynamic look
+    ctx.save(); ctx.translate(bx + bw / 2, 41); ctx.transform(1, 0, L ? -.35 : .35, 1, 0, 0); ctx.translate(-(bx + bw / 2), -41);
     rr(bx - 3, 27, bw + 6, 28, 3, '#2a0a0a', 3);
     const hw = bw * f.hp / f.ch.hp, rw = bw * f.redHp / f.ch.hp;
     ctx.fillStyle = '#d01818'; ctx.fillRect(L ? bx : bx + bw - rw, 30, rw, 22);
@@ -19,6 +20,9 @@ function drawHUD() {
     const g = ctx.createLinearGradient(0, 30, 0, 52);
     g.addColorStop(0, low ? '#ffb0a0' : '#fff27a'); g.addColorStop(1, low ? '#ff5030' : '#f5a300');
     ctx.fillStyle = g; ctx.fillRect(L ? bx : bx + bw - hw, 30, hw, 22);
+    ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.fillRect(L ? bx : bx + bw - hw, 31, hw, 5);        // gloss
+    ctx.globalAlpha = .18; ctx.fillStyle = halftone(); ctx.fillRect(L ? bx : bx + bw - hw, 40, hw, 12); ctx.globalAlpha = 1;
+    ctx.restore();
 
     // super meter + skill cooldown
     const mx = L ? 92 : 648, mw = 220, full = f.meter >= 100, align = L ? 'left' : 'right', lx = L ? mx + mw + 8 : mx - 8;

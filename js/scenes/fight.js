@@ -43,6 +43,7 @@ function fightStep() {
   if (game.paused) { if (tap(0, 'quit')) { game.paused = false; initSelect(); } return; }
 
   updParticles();
+  drawColorGrade();
   if (game.redFlash > 0) game.redFlash--;
   game.shake *= .86; if (game.shake < .4) game.shake = 0;
   if (game.freeze > 0) { game.freeze--; if (game.freezeF) game.freezeF.anim++; return; } // super cut-in
@@ -99,15 +100,18 @@ function drawFight() {
   ctx.save();
   if (game.shake > 0) ctx.translate(rand(-1, 1) * game.shake, rand(-1, 1) * game.shake);
   ctx.drawImage(BG, 0, 0);
-  drawFx();
+  drawStageLights();
+  drawFx(false);
   for (const p of projs) if (p.inert) p.draw(p);
 
   // the fighter who is attacking is drawn in front
   const busy = f => ['attack', 'skill', 'super'].includes(f.state) || !!(f.ch.states && f.ch.states[f.state]);
-  if (game.freeze > 0 && game.freezeF) { const c = game.freezeF; drawFighter(other(c)); dim(.6); drawFighter(c); }
+  if (game.freeze > 0 && game.freezeF) { const c = game.freezeF; drawFighter(other(c)); drawSuperPanel(c); drawFighter(c); }
   else (busy(A) && !busy(B) ? [B, A] : [A, B]).forEach(drawFighter);
 
   for (const p of projs) if (!p.inert) p.draw(p);
+  drawFx(true);
+  drawMangaMoments();
   drawParticles();
   for (const f of game.F) drawWorldUI(f);
   ctx.restore();
@@ -123,4 +127,52 @@ function drawPause() {
   txt('P1: WASD · F punch · G kick · H skill · J super', 480, 290, 15, '#ffd23a', 'center', 'sans-serif');
   txt('P2: arrows · , punch · . kick · / skill · Right Shift super', 480, 316, 15, '#4aa8ff', 'center', 'sans-serif');
   txt('Block by holding away from your opponent', 480, 350, 14, '#ccc', 'center', 'sans-serif');
+}
+
+/* ---------- manga / lighting layers ---------- */
+
+/** Pulsing neon glow on the stage props */
+function drawStageLights() {
+  ctx.save(); ctx.globalCompositeOperation = 'screen';
+  const p = .75 + .25 * Math.sin(frame * .07) + (Math.random() < .02 ? -.4 : 0); // occasional neon flicker
+  let g = ctx.createRadialGradient(460, 175, 10, 460, 175, 230);
+  g.addColorStop(0, 'rgba(160,110,255,' + (.28 * p) + ')'); g.addColorStop(1, 'rgba(160,110,255,0)');
+  ctx.fillStyle = g; ctx.fillRect(200, 0, 520, 420);
+  g = ctx.createRadialGradient(240, 310, 5, 240, 310, 160);
+  g.addColorStop(0, 'rgba(255,170,90,.18)'); g.addColorStop(1, 'rgba(255,170,90,0)');
+  ctx.fillStyle = g; ctx.fillRect(60, 150, 360, 320);
+  ctx.restore();
+}
+
+/** Magenta-left / cyan-right colour grading over the whole scene */
+function drawColorGrade() {
+  ctx.save(); ctx.globalCompositeOperation = 'overlay';
+  const g = ctx.createLinearGradient(0, 0, W, 0);
+  g.addColorStop(0, 'rgba(255,60,190,.32)'); g.addColorStop(.5, 'rgba(130,90,255,.08)'); g.addColorStop(1, 'rgba(40,220,255,.32)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+}
+
+/** Super cut-in: coloured burst, screen tone and focus lines behind the caster */
+function drawSuperPanel(c) {
+  const cx = c.x, cy = c.y - 90;
+  ctx.save();
+  ctx.fillStyle = 'rgba(8,2,20,.72)'; ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(cx, cy, 20, cx, cy, 520);
+  g.addColorStop(0, c.ch.accent); g.addColorStop(.35, shadeCol(c.ch.accent, .5)); g.addColorStop(1, 'rgba(8,2,20,0)');
+  ctx.globalAlpha = .55; ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.globalAlpha = .35; ctx.fillStyle = halftone(); ctx.fillRect(0, 0, W, H);
+  ctx.globalAlpha = 1;
+  focusLines(cx, cy, 150, 'rgba(255,255,255,.75)', 110);
+  ctx.restore();
+}
+
+/** Focus lines on K.O. and during long combo moments */
+function drawMangaMoments() {
+  if (game.phase === 'ko' && game.pt < 70 && game.koText === 'K.O.') {
+    const l = game.F.find(f => f.state === 'ko') || game.F[0];
+    ctx.save(); ctx.globalAlpha = .25; ctx.fillStyle = halftone(); ctx.fillRect(0, 0, W, H); ctx.restore();
+    focusLines(l.x, l.y - 60, 170, 'rgba(255,255,255,.7)', 100);
+  }
+  for (const f of game.F) if (f.state === 'super' && f.data.ph === 'bar') focusLines(other(f).x, other(f).y - 100, 190, 'rgba(255,255,255,.35)', 50);
 }

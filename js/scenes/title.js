@@ -24,6 +24,7 @@ function titleStep() {
 
 function drawTitle() {
   ctx.drawImage(BG, 0, 0); dim(.55);
+  focusLines(480, 120, 230, 'rgba(255,220,120,.16)', 70);
   const n = CHARS.length, gap = Math.min(150, 760 / n), x0 = 480 - (n - 1) * gap / 2;
   CHARS.forEach((c, i) => {
     drawPortrait(c, x0 + i * gap - 48, 392, 96, false, false);

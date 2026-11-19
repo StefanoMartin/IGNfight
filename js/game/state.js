@@ -39,7 +39,7 @@ class Fighter {
       anim: Math.random() * 100 | 0, launched: false, rot: 0, say: null,
       inp: {}, prev: {}, tap: {},
       ai: { t: 0, act: 'wait', f: 0, threat: false, blk: false, parry: false, mb: null, kicked: false },
-      hs: 0, bs: 0, stunT: 0, stunIcon: null, cd: null
+      hs: 0, bs: 0, stunT: 0, stunIcon: null, cd: null, trail: []
     });
   }
   get air() { return this.y < GY - .5; }
