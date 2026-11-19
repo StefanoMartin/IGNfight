@@ -55,8 +55,9 @@ function atkPose(f, P) {
 }
 
 /** Turns a pose into joint positions (local space, feet at 0,0, facing +x) */
+const LEG_K = 1.07; // slightly longer, more realistic legs
 function rig(f, P) {
-  const R = f.ch.rig;
+  const R0 = f.ch.rig, R = Object.assign({}, R0, { ul: R0.ul * LEG_K, ll: R0.ll * LEG_K });
   const fy = Math.cos(P.fl[0]) * R.ul + Math.cos(P.fl[1]) * R.ll, by = Math.cos(P.bl[0]) * R.ul + Math.cos(P.bl[1]) * R.ll;
   const hip = { x: 0, y: (P.hipY != null ? P.hipY : -Math.max(fy, by, 20)) + (P.dy || 0) }; // lowest foot touches the ground
   const fk = seg(hip, P.fl[0], R.ul), ff = seg(fk, P.fl[1], R.ll), bk = seg(hip, P.bl[0], R.ul), bf = seg(bk, P.bl[1], R.ll);
@@ -68,7 +69,7 @@ function rig(f, P) {
 }
 
 const LIMB_BULK = 1.25;  // thicker, rounder limbs
-const HEAD_SCALE = 1.15; // slightly bigger anime-style heads
+const HEAD_SCALE = 1; // anime head size is set by the face renderer
 
 /** Back limbs -> torso -> front leg -> head -> front arm (cel shading on) */
 function drawBody(f, P, J) {
@@ -133,8 +134,8 @@ function drawMound(f) {
   rr(x - 6, GY - 15, 18, 6, 2, '#0b0b0b', 0); ctx.fillStyle = '#9ef'; ctx.fillRect(x + 5, GY - 14, 4, 2);
 }
 
-/** Square head-and-shoulders portrait (HUD, select screen, title) */
-function drawPortrait(ch, x, y, s, flip, alt) {
+/** Square head-and-shoulders portrait (HUD, select grid, title) */
+function drawPortrait(ch, x, y, s, flip, alt, opts) {
   ctx.save(); rr(x, y, s, s, 6, '#1c1030', 0); ctx.beginPath(); ctx.rect(x, y, s, s); ctx.clip();
   const g = ctx.createLinearGradient(x, y, x, y + s); g.addColorStop(0, ch.accent); g.addColorStop(1, '#1c1030');
   ctx.globalAlpha = .55; ctx.fillStyle = g; ctx.fillRect(x, y, s, s);
@@ -142,9 +143,8 @@ function drawPortrait(ch, x, y, s, flip, alt) {
   ctx.globalAlpha = .14; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;                          // speed lines
   for (let i = 0; i < 7; i++) { const o = (i * 23 + 7) % s; ctx.beginPath(); ctx.moveTo(x + o - s * .3, y + s); ctx.lineTo(x + o + s * .3, y); ctx.stroke(); }
   ctx.globalAlpha = 1;
-  ctx.translate(x + s / 2, y + s * .6); const k = s / 50; ctx.scale((flip ? -1 : 1) * k, k);
   if (alt) ctx.filter = 'hue-rotate(160deg)';
-  const fake = { anim: frame, state: 'idle', ch, data: {}, face: 1 }, P = P0(), J = { hc: { x: -5, y: -6 }, sh: { x: -5, y: 16 }, hip: { x: -5, y: 80 } };
-  CEL = true; quad(J.hip, J.sh, 18, 21, ch.color); celTorso(J.hip, J.sh, 18, 21); ch.look.head(fake, P, J); CEL = false;
+  const R = s * .25 * (ch.face && ch.face.species === 'mole' ? .85 : 1);
+  drawBust(ch, x + s * (flip ? .55 : .45), y + s * .42, R, flip, opts);
   ctx.restore();
 }

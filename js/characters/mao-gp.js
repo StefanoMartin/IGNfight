@@ -137,6 +137,8 @@ registerFighter({
     else { P.fa = t < 12 ? [2.6, 3.2] : [1.4, 1.2]; P.lean = t < 12 ? -.1 : .15; }
   },
 
+  face: { skin: '#e4ad86', hair: '#2a1a12', hairLight: '#6a4228', style: 'wild', eyes: '#c0392b', expr: 'smirk' },
+  bust: { base: '#d01f2e', trim: '#f4f4f4', collar: 'racing', emblem: 'GP', emblemColor: '#ffe14a' },
   look: {
     tw: [15, 18],
     lw: 13, aw: 12, legC: '#22242c', legD: '#17181e', armC: '#d01f2e', armD: '#a5141f',
@@ -147,16 +149,6 @@ registerFighter({
       const c = lerp(J.hip, J.sh, .4);
       ctx.save(); ctx.translate(c.x + 9, c.y); ctx.rotate(P.lean); ctx.scale(f.face || 1, 1); txt('GP', 0, 0, 12, '#ffe14a', 'center', FONT, 3); ctx.restore();
       circ(J.sh.x + 2, J.sh.y + 5, 7, '#f4f4f4', 2); // shoulder armour
-    },
-    head(f, P, J) {
-      const c = J.hc;
-      circ(c.x, c.y, 15, '#e0a982');
-      ctx.beginPath(); ctx.moveTo(c.x + 12, c.y - 10); ctx.lineTo(c.x + 4, c.y - 20); ctx.lineTo(c.x - 2, c.y - 14); ctx.lineTo(c.x - 9, c.y - 21); ctx.lineTo(c.x - 13, c.y - 12);
-      ctx.lineTo(c.x - 19, c.y - 8); ctx.lineTo(c.x - 14, c.y + 4); ctx.lineTo(c.x - 7, c.y - 6); ctx.closePath();
-      ctx.fillStyle = '#2a1a12'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
-      ell(c.x + 8, c.y - 2, 3.6, 3.4, 0, '#fff', 1.3); circ(c.x + 9.2, c.y - 2, 1.8, '#111', 0); circ(c.x + 9.8, c.y - 2.7, .7, '#fff', 0);
-      line({ x: c.x + 2, y: c.y - 6 }, { x: c.x + 14, y: c.y - 9 }, 2.6, '#2a1a12'); // raised, provocative brow
-      line({ x: c.x + 5, y: c.y + 8 }, { x: c.x + 14, y: c.y + 6 }, 2, '#6a2a1a'); line({ x: c.x + 14, y: c.y + 6 }, { x: c.x + 15, y: c.y + 4 }, 2, '#6a2a1a'); // smirk
     },
     hand(e, h) { circ(h.x, h.y, 6.5, '#151515'); ctx.fillStyle = '#d01f2e'; ctx.fillRect(h.x - 1, h.y - 5, 4, 10); }, // racing gloves
     foot(k, ft) { rr(ft.x - 8, ft.y - 12, 26, 13, 4, '#151515'); ctx.fillStyle = '#d01f2e'; ctx.fillRect(ft.x - 6, ft.y - 8, 20, 2.5); },

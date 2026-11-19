@@ -107,6 +107,8 @@ registerFighter({
     else { const k = (t % 7) < 3; P.fa = k ? [1.57, 1.5] : [.5, 2.3]; P.lean = .1; }
   },
 
+  face: { species: 'mole', fur: '#6a5146', furLight: '#9a7a66', shadesTint: '#9ef', expr: 'cool' },
+  bust: { base: '#6a5146', collar: 'fur' },
   look: {
     tw: [15, 17], // torso half-widths at hip / shoulders (for the cel shading pass)
     lw: 14, aw: 11, legC: '#6a5146', legD: '#45372f', armC: '#6a5146', armD: '#45372f',
@@ -127,16 +129,6 @@ registerFighter({
       rr(-9, -17, 12, 14, 1, '#f4f1e6', 1.5); rr(-2, -19, 12, 14, 1, '#fffbe8', 1.5);
       rr(-15, -8, 25, 19, 4, '#7a4a24'); rr(-15, -8, 25, 7, 3, '#93603a');
       ctx.restore();
-    },
-    head(f, P, J) {
-      const c = J.hc;
-      circ(c.x - 12, c.y - 12, 5, '#6a5146'); ell(c.x - 2, c.y, 18, 16, 0, '#6a5146');
-      ell(c.x + 17, c.y + 5, 13, 7, .12, '#7a675b'); circ(c.x + 30, c.y + 6, 4.5, '#f39aa6'); // snout + nose
-      ctx.strokeStyle = '#d9cbbd'; ctx.lineWidth = 1;
-      for (const k of [-3, 0, 3]) { ctx.beginPath(); ctx.moveTo(c.x + 22, c.y + 8); ctx.lineTo(c.x + 35, c.y + 10 + k * 1.6); ctx.stroke(); }
-      line({ x: c.x + 2, y: c.y - 5 }, { x: c.x - 17, y: c.y - 3 }, 2.5, '#0a0a0a'); // sunglasses
-      rr(c.x, c.y - 9, 20, 8, 3, '#0b0b0b', 0); ctx.fillStyle = '#9ef'; ctx.fillRect(c.x + 13, c.y - 8, 4, 2);
-      line({ x: c.x + 12, y: c.y + 11 }, { x: c.x + 18, y: c.y + 11 }, 1.5, '#2a201b');
     },
     hand(e, h) { circ(h.x, h.y, 6, '#f0a3a8'); },
     foot(k, ft) { ell(ft.x + 6, ft.y - 3, 11, 5, 0, '#e89aa0'); },

@@ -7,7 +7,7 @@
    Remember to add an entry to CHANGELOG.md when you change it.
    ========================================================= */
 
-const GAME_VERSION = '0.4.0';
+const GAME_VERSION = '0.5.0';
 
 /** Small version label in the bottom-right corner (drawn on every screen) */
 function drawVersion() {

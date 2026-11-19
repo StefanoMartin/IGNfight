@@ -141,6 +141,8 @@ registerFighter({
     txt(st.name, x, y + 1, 12, st.col, 'center', FONT);
   },
 
+  face: { skin: '#e8b48e', hair: '#16120e', hairLight: '#3e4060', style: 'neat', eyes: '#6a4020', expr: 'determined', winExpr: 'smirk' },
+  bust: { base: '#1b1d2e', trim: '#ffd23a', collar: 'track', medals: true },
   look: {
     tw: [15, 18],
     lw: 13, aw: 12, legC: '#1b1d2e', legD: '#121322', armC: '#1b1d2e', armD: '#121322',
@@ -155,17 +157,6 @@ registerFighter({
       });
       rr(J.hip.x - 17, J.hip.y - 6, 34, 7, 2, '#2a2a34', 1.5); // platinum trophy belt
       for (const dx of [-12, -2, 8]) { ctx.save(); ctx.translate(J.hip.x + dx + 2, J.hip.y - 9); masterTrophy(8, 10, true); ctx.restore(); }
-    },
-    head(f, P, J) {
-      const c = J.hc;
-      circ(c.x, c.y, 15, '#e6b08a');
-      ctx.beginPath(); ctx.moveTo(c.x + 13, c.y - 8); ctx.quadraticCurveTo(c.x + 6, c.y - 21, c.x - 10, c.y - 17); ctx.quadraticCurveTo(c.x - 18, c.y - 10, c.x - 15, c.y + 3);
-      ctx.lineTo(c.x - 9, c.y - 5); ctx.lineTo(c.x + 2, c.y - 10); ctx.closePath();
-      ctx.fillStyle = '#16120e'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
-      line({ x: c.x - 6, y: c.y - 15 }, { x: c.x + 5, y: c.y - 15 }, 2, 'rgba(150,170,255,.5)');
-      ell(c.x + 8, c.y - 2, 3.6, 3.6, 0, '#fff', 1.3); circ(c.x + 9, c.y - 2, 1.9, '#3a2410', 0); circ(c.x + 9.6, c.y - 2.8, .7, '#fff', 0);
-      line({ x: c.x + 3, y: c.y - 8 }, { x: c.x + 14, y: c.y - 6 }, 2.4, '#16120e'); // focused brow
-      line({ x: c.x + 7, y: c.y + 9 }, { x: c.x + 13, y: c.y + 9 }, 1.8, '#6a3a26');
     },
     hand(e, h) { circ(h.x, h.y, 5.8, '#e6b08a'); },
     foot(k, ft) { rr(ft.x - 7, ft.y - 10, 24, 11, 4, '#f2f2f2'); ctx.fillStyle = '#ffd23a'; ctx.fillRect(ft.x - 5, ft.y - 6, 18, 2); },

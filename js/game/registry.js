@@ -10,7 +10,9 @@
      rig         optional body proportions (see RIG)
      skill, skillDesc, skillCooldown, skillMove(f,o,t,d)
      super, superDesc, superSay, superMove(f,o,t,d)
-     look        drawing functions: torso, head, hand, foot, behind?, armDeco?, front?, glow?
+     face        anime head config: skin, hair, hairLight, style, eyes, acc[], expr ... (see anime-face.js)
+     bust        portrait clothing: base, trim, inner, collar, scarf, emblem, medals
+     look        drawing functions: torso, hand, foot, behind?, armDeco?, front?, glow? (head comes from face)
      pose(f,P)   pose for skill / super / custom states
      basePose(P) optional default pose tweak (e.g. hands in pockets)
      ai          {range, aggr, cancel, parry, passiveSkill, superOK(dist,f,o), skillOK(dist,f,o)}
@@ -42,6 +44,8 @@ function mkMoves(o) {
 function registerFighter(def) {
   def.rig = def.rig || RIG;
   def.scale = def.scale || 1;
+  if (def.face && def.look && !def.look.head) // shared anime head (js/render/anime-face.js)
+    def.look.head = (f, P, J) => drawAnimeHead(f, J.hc, def.face, def.headR || 14.5);
   def.moves = mkMoves(def.frameData || { spd: 1, dmg: 1 });
   def.ai = Object.assign({
     range: 100, aggr: .5, cancel: false, parry: false, passiveSkill: false,

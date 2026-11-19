@@ -2,6 +2,13 @@
 
 All notable changes to Forum Fighters. Versions follow `MAJOR.MINOR.PATCH` (see the README).
 
+## 0.5.0
+- New anime face renderer shared by every fighter: 3/4-view faces with shaped jaws, detailed irises and highlights, lashes, brows, layered hair with shine, and accessories (shades, glasses, headsets, cap, hood, headband)
+- Facial expressions follow the action: attacking, getting hit (> <), K.O. (× ×) and winning
+- Character select redesigned with large bust portraits in coloured art panels; HUD, title and grid portraits use the new busts
+- More natural body proportions: longer legs and muscle shape on arms and legs
+- Cinematic stage: depth-of-field blur on the back wall, bokeh lights, window light beams, glossy floor with fighter reflections, floating dust
+
 ## 0.4.0
 - New synthesized soundtrack: step sequencer with resonant bass, lead with vibrato, arpeggios and a full drum kit
 - Separate themes for the title screen, character select and fights

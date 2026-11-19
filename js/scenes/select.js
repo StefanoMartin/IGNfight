@@ -55,8 +55,7 @@ function drawSelect() {
   for (const i of [0, 1]) {
     const f = s.prev[i]; if (!f) continue;
     f.face = i ? -1 : 1; if (!s.lock[i]) f.state = 'idle';
-    // big preview
-    ctx.save(); ctx.translate(i ? 820 : 140, 350); ctx.scale(1.3, 1.3); ctx.translate(-f.x, -GY); drawFighter(f); ctx.restore();
+    drawSelectArt(i, f.ch, s.lock[i], f.alt);
     // info card
     const ch = f.ch, x = i ? 495 : 265, y = 100, col = i ? '#4aa8ff' : '#ff4a5a';
     rr(x, y, 200, 262, 8, 'rgba(10,6,22,.85)', 0); ctx.strokeStyle = col; ctx.lineWidth = 2; rrp(x, y, 200, 262, 8); ctx.stroke();
@@ -89,4 +88,31 @@ function drawSelect() {
 
   if (s.lock[0] && s.lock[1]) { if ((frame >> 3) & 1) bigText('GET READY!', 480, 250, 46); }
   else txt(game.mode === 0 && s.lock[0] ? 'Now choose your CPU opponent' : '◀ ▶ choose · F / ENTER confirm · ESC back', 480, 520, 14, '#c9b8ff', 'center', 'sans-serif');
+}
+
+/** Big character art panel: coloured backdrop, focus lines, screen tone and a large bust */
+function drawSelectArt(i, ch, locked, alt) {
+  const x0 = i ? 705 : 0, w = 255, y0 = 92, h = 280;
+  ctx.save();
+  ctx.beginPath(); // slanted panel
+  if (i) { ctx.moveTo(x0 + 22, y0); ctx.lineTo(x0 + w, y0); ctx.lineTo(x0 + w, y0 + h); ctx.lineTo(x0, y0 + h); }
+  else { ctx.moveTo(x0, y0); ctx.lineTo(x0 + w - 22, y0); ctx.lineTo(x0 + w, y0 + h); ctx.lineTo(x0, y0 + h); }
+  ctx.closePath(); ctx.clip();
+  const g = ctx.createLinearGradient(x0, y0, x0 + w * .3, y0 + h);
+  g.addColorStop(0, lightCol(ch.accent === '#f4f7fb' ? ch.color : ch.accent, .1)); g.addColorStop(.55, shadeCol(ch.color, .35)); g.addColorStop(1, '#0c0618');
+  ctx.fillStyle = g; ctx.fillRect(x0, y0, w, h);
+  ctx.globalAlpha = .22; ctx.fillStyle = halftone(); ctx.fillRect(x0, y0 + h * .4, w, h);
+  ctx.globalAlpha = 1;
+  focusLines(x0 + w / 2, y0 + 90, 70, 'rgba(255,255,255,' + (locked ? .35 : .14) + ')', 50);
+  // giant faded name behind the character
+  ctx.save(); ctx.globalAlpha = .13; ctx.translate(x0 + w / 2, y0 + 210); ctx.rotate(-.12);
+  ctx.font = '64px ' + FONT; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.fillText(ch.name.toUpperCase(), 0, 0); ctx.restore();
+  const R = ch.face && ch.face.species === 'mole' ? 42 : 47, bob = Math.sin(frame * .05 + i) * 2;
+  if (locked) { ctx.shadowColor = ch.accent; ctx.shadowBlur = 25; }
+  if (alt) ctx.filter = 'hue-rotate(160deg)';
+  drawBust(ch, x0 + w / 2 + (i ? 10 : -10), y0 + 92 + bob, R, !!i, { expr: locked ? (ch.face.winExpr || 'grin') : undefined });
+  ctx.restore();
+  ctx.strokeStyle = i ? '#4aa8ff' : '#ff4a5a'; ctx.lineWidth = 3; ctx.beginPath();
+  if (i) { ctx.moveTo(x0 + 22, y0); ctx.lineTo(x0, y0 + h); } else { ctx.moveTo(x0 + w - 22, y0); ctx.lineTo(x0 + w, y0 + h); }
+  ctx.stroke();
 }

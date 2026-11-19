@@ -92,9 +92,15 @@ function capsulePath(a, b, ra, rb) {
 }
 
 /** Thick limb through pts, tapering from root to tip, with ink outline and cel shading */
-function limb(pts, w, col) {
-  const n = pts.length - 1, rs = [];
-  for (let i = 0; i <= n; i++) rs.push(w / 2 * (1.12 - .32 * i / n));
+function limb(pts0, w, col) {
+  // taper from root to tip, with a fuller "muscle" point a third of the way down each segment
+  const pts = [], rs = [], n0 = pts0.length - 1;
+  for (let i = 0; i <= n0; i++) {
+    const r = w / 2 * (1.12 - .32 * i / n0);
+    pts.push(pts0[i]); rs.push(r);
+    if (i < n0) { pts.push(lerp(pts0[i], pts0[i + 1], .35)); rs.push(r * (i === 0 ? 1.08 : 1.12)); }
+  }
+  const n = pts.length - 1;
   const segs = (grow, off) => {
     ctx.beginPath();
     for (let i = 0; i < n; i++) {

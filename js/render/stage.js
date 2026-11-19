@@ -95,5 +95,29 @@ function buildStage() {
   // vignette
   gr = g.createRadialGradient(480, 300, 220, 480, 300, 640); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,.55)');
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
+
+  // --- cinematic pass: blur the back wall (depth of field), keep the floor sharp ---
+  const sharp = document.createElement('canvas'); sharp.width = W; sharp.height = H;
+  sharp.getContext('2d').drawImage(BG, 0, 0);
+  g.clearRect(0, 0, W, H);
+  g.save(); g.filter = 'blur(2.2px)'; g.drawImage(sharp, 0, 0); g.restore();
+  g.save(); g.beginPath(); g.rect(0, WALL + 14, W, H); g.clip(); g.drawImage(sharp, 0, 0); g.restore();
+  gr = g.createLinearGradient(0, WALL - 10, 0, WALL + 30); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+
+  // bokeh from the city lights and neon
+  g.save(); g.globalCompositeOperation = 'screen';
+  const bok = (x, y, r, col, a) => { const b = g.createRadialGradient(x, y, 0, x, y, r); b.addColorStop(0, col.replace('A', a)); b.addColorStop(.7, col.replace('A', a * .6)); b.addColorStop(1, col.replace('A', 0)); g.fillStyle = b; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill(); };
+  for (let i = 0; i < 14; i++) bok(780 + (i * 47) % 150, 150 + (i * 31) % 140, 6 + (i % 4) * 3, 'rgba(255,214,120,A)', .35);
+  for (let i = 0; i < 8; i++) bok(410 + (i * 37) % 110, 130 + (i * 19) % 50, 5 + (i % 3) * 3, 'rgba(176,164,255,A)', .3);
+  for (let i = 0; i < 6; i++) bok(80 + (i * 61) % 240, 110 + (i * 43) % 200, 8 + (i % 3) * 4, 'rgba(255,120,200,A)', .12);
+  // light beams from the window
+  for (let k = 0; k < 3; k++) {
+    const lb = g.createLinearGradient(850, 80, 560, 470); lb.addColorStop(0, 'rgba(120,160,255,.13)'); lb.addColorStop(1, 'rgba(120,160,255,0)');
+    g.fillStyle = lb; g.beginPath(); g.moveTo(790 + k * 45, 70); g.lineTo(820 + k * 45, 70); g.lineTo(640 + k * 70, 470); g.lineTo(560 + k * 70, 470); g.closePath(); g.fill();
+  }
+  g.restore();
+  // glossy floor sheen
+  gr = g.createLinearGradient(0, WALL, 0, H); gr.addColorStop(0, 'rgba(255,255,255,.07)'); gr.addColorStop(.25, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(0,0,0,.25)');
+  g.fillStyle = gr; g.fillRect(0, WALL, W, H - WALL);
 }
 buildStage();

@@ -103,6 +103,7 @@ function drawFight() {
   drawStageLights();
   drawFx(false);
   for (const p of projs) if (p.inert) p.draw(p);
+  for (const f of game.F) drawReflection(f);
 
   // the fighter who is attacking is drawn in front
   const busy = f => ['attack', 'skill', 'super'].includes(f.state) || !!(f.ch.states && f.ch.states[f.state]);
@@ -141,6 +142,23 @@ function drawStageLights() {
   g = ctx.createRadialGradient(240, 310, 5, 240, 310, 160);
   g.addColorStop(0, 'rgba(255,170,90,.18)'); g.addColorStop(1, 'rgba(255,170,90,0)');
   ctx.fillStyle = g; ctx.fillRect(60, 150, 360, 320);
+  // floating dust motes catching the light
+  for (let i = 0; i < 36; i++) {
+    const sp = .15 + (i % 4) * .08, x = ((i * 97 + frame * sp) % (W + 40)) - 20, y = 90 + (i * 53) % 330 + Math.sin(frame * .013 + i) * 12;
+    ctx.globalAlpha = .18 + .14 * Math.sin(frame * .03 + i * 1.7);
+    ctx.fillStyle = i % 3 ? '#ffe2b0' : '#bcd4ff'; ctx.beginPath(); ctx.arc(x, y, 1 + (i % 3) * .6, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+
+/** Soft mirror image of a fighter on the glossy floor */
+function drawReflection(f) {
+  if (f.data.hidden || f.data.under) return;
+  const P = getPose(f), J = rig(f, P);
+  ctx.save();
+  ctx.beginPath(); ctx.rect(0, GY + 2, W, H - GY); ctx.clip();
+  ctx.translate(0, GY + 3); ctx.scale(1, -.55); ctx.translate(0, -GY); // mirror about the floor line, foreshortened
+  drawFighterAt(f, P, J, f.x, f.y, 'brightness(.7) blur(1px) ', .2);
   ctx.restore();
 }
 

@@ -98,6 +98,8 @@ registerFighter({
     else walkP(P, f.anim, .14);
   },
 
+  face: { skin: '#f0c4a4', hair: '#141418', hairLight: '#3a4060', style: 'slick', eyes: '#5a3a2a', acc: ['shades'], shadesTint: '#ff3a4a', expr: 'smirk', attackExpr: 'smirk' },
+  bust: { base: '#2a2f5c', collar: 'blazer', scarf: '#d1222f' },
   look: {
     tw: [14, 18], // torso half-widths at hip / shoulders (for the cel shading pass)
     lw: 11, aw: 11, legC: '#181a2b', legD: '#10121e', armC: '#2a2f5c', armD: '#1d2045',
@@ -116,19 +118,6 @@ registerFighter({
       line({ x: J.sh.x + 12, y: J.sh.y + 3 }, { x: a.x + 5, y: a.y + 2 }, 2, '#0d0f19');
       circ(a.x + 6, a.y + 10, 1.8, '#d4af37', 0); circ(a.x + 7, a.y + 20, 1.8, '#d4af37', 0);
       rr(J.sh.x - 11, J.sh.y - 6, 24, 9, 4, '#d1222f');
-    },
-    head(f, P, J) {
-      const c = J.hc;
-      circ(c.x, c.y, 15, '#ecbd9d');
-      ctx.beginPath(); // slicked-back hair
-      ctx.moveTo(c.x + 12, c.y - 9); ctx.quadraticCurveTo(c.x + 4, c.y - 22, c.x - 12, c.y - 15);
-      ctx.quadraticCurveTo(c.x - 19, c.y - 6, c.x - 14, c.y + 6); ctx.lineTo(c.x - 6, c.y - 4);
-      ctx.quadraticCurveTo(c.x + 2, c.y - 9, c.x + 12, c.y - 9);
-      ctx.fillStyle = '#141414'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
-      line({ x: c.x - 8, y: c.y - 14 }, { x: c.x + 4, y: c.y - 15 }, 2, 'rgba(160,180,255,.55)'); // hair shine
-      rr(c.x - 1, c.y - 6, 19, 7, 2, '#050505', 0); line({ x: c.x, y: c.y - 4 }, { x: c.x - 11, y: c.y - 3 }, 2, '#050505'); // indoor sunglasses
-      ctx.fillStyle = '#d1222f'; ctx.fillRect(c.x + 10, c.y - 5, 4, 1.5);
-      line({ x: c.x + 5, y: c.y + 9 }, { x: c.x + 13, y: c.y + 6 }, 2, '#7a3a2a'); // smug smirk
     },
     hand(e, h) { circ(h.x, h.y, 5.5, '#ecbd9d'); },
     foot(k, ft) { // polished pointed shoes

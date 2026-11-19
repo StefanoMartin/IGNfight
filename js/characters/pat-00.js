@@ -155,6 +155,8 @@ registerFighter({
     ctx.fillStyle = col; ctx.fillRect(x - 36, y + 13, 72 * ((f.hype || 0) % 34) / 34 * (live ? 0 : 1) + (live ? 72 : 0), 2);
   },
 
+  face: { skin: '#eebb96', hair: '#7a4a22', hairLight: '#c88a44', style: 'quiff', eyes: '#2a6ff0', acc: ['headset'], expr: 'grin' },
+  bust: { base: '#1d5fe0', trim: '#f2f2f6', collar: 'varsity', emblem: '00' },
   look: {
     tw: [15, 18],
     lw: 13, aw: 12, legC: '#2a3550', legD: '#1e2740', armC: '#f2f2f6', armD: '#cfd3de',
@@ -166,21 +168,6 @@ registerFighter({
       ctx.save(); ctx.translate(c.x + 7, c.y); ctx.rotate(P.lean); ctx.scale(f.face || 1, 1);
       rr(-9, -8, 18, 16, 3, '#f2f2f6', 1.5); txt('00', 0, 1, 11, '#1d5fe0'); ctx.restore();
       rr(J.sh.x - 10, J.sh.y - 5, 20, 8, 4, '#f2f2f6', 2);
-    },
-    head(f, P, J) {
-      const c = J.hc;
-      circ(c.x, c.y, 15.5, '#e8b48c');
-      ctx.beginPath(); // big styled quiff
-      ctx.moveTo(c.x + 14, c.y - 8); ctx.quadraticCurveTo(c.x + 16, c.y - 28, c.x - 2, c.y - 24); ctx.quadraticCurveTo(c.x - 16, c.y - 24, c.x - 16, c.y - 4);
-      ctx.lineTo(c.x - 9, c.y - 2); ctx.quadraticCurveTo(c.x, c.y - 12, c.x + 14, c.y - 8);
-      ctx.fillStyle = '#7a4a22'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
-      line({ x: c.x - 8, y: c.y - 18 }, { x: c.x + 6, y: c.y - 21 }, 2, 'rgba(255,220,170,.5)');
-      ell(c.x + 8, c.y - 2, 3.8, 4.5, 0, '#fff', 1.5); circ(c.x + 9.3, c.y - 2, 2, '#163a8c', 0); circ(c.x + 10, c.y - 3, .8, '#fff', 0);
-      line({ x: c.x + 3, y: c.y - 9 }, { x: c.x + 13, y: c.y - 9.5 }, 2.2, '#4a2a12');
-      ell(c.x + 10, c.y + 8, 4.5, 3.2, 0, '#7a1a1a', 1.5);                               // big grin
-      ctx.lineWidth = 3; ctx.strokeStyle = '#111'; ctx.beginPath(); ctx.arc(c.x - 2, c.y - 2, 17, Math.PI * 1.1, Math.PI * 1.75); ctx.stroke(); // headset band
-      circ(c.x - 4, c.y + 2, 4.5, '#222', 2);
-      line({ x: c.x - 1, y: c.y + 5 }, { x: c.x + 12, y: c.y + 12 }, 2, '#222'); circ(c.x + 13, c.y + 12, 2.2, '#ff4a5a', 0); // mic
     },
     hand(e, h, front) {
       circ(h.x, h.y, 6, '#e8b48c');

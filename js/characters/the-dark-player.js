@@ -126,6 +126,8 @@ registerFighter({
     if (f.state === 'super' && t >= 30) { P.fa = [1.57, 1.6]; P.lean = .25; }
   },
 
+  face: { skin: '#d6a585', hair: '#15161a', hairLight: '#2e3448', style: 'hood', hood: '#232a3d', eyes: '#2fdf70', acc: ['glasses'], expr: 'determined' },
+  bust: { base: '#232a3d', collar: 'hoodie' },
   look: {
     tw: [15, 18], // torso half-widths at hip / shoulders (for the cel shading pass)
     lw: 12, aw: 12, legC: '#121419', legD: '#0c0d11', armC: '#232a3d', armD: '#191d2b',
@@ -137,16 +139,6 @@ registerFighter({
       const c = lerp(J.hip, J.sh, .62);
       ctx.save(); ctx.shadowColor = '#3bff7f'; ctx.shadowBlur = 8; ctx.translate(c.x + 4, c.y); ctx.scale(f.face || 1, 1);
       txt('>_', 0, 0, 12, '#3bff7f', 'center', 'monospace', 0, OL, 'bold'); ctx.restore();
-    },
-    head(f, P, J) {
-      const c = J.hc;
-      ell(c.x - 4, c.y - 1, 19, 21, 0, '#232a3d'); ell(c.x + 6, c.y + 2, 11, 14, 0, '#c99a7c', 2); // hood + face
-      ctx.beginPath(); ctx.moveTo(c.x - 4, c.y - 12); ctx.quadraticCurveTo(c.x + 8, c.y - 16, c.x + 16, c.y - 8); ctx.lineTo(c.x + 4, c.y - 6); ctx.closePath();
-      ctx.fillStyle = '#14161a'; ctx.fill();
-      ctx.fillStyle = 'rgba(59,255,127,.35)'; ctx.fillRect(c.x + 5, c.y - 5, 11, 8); // thick-rimmed glasses
-      ctx.lineWidth = 3; ctx.strokeStyle = '#050505'; ctx.strokeRect(c.x + 5, c.y - 5, 11, 8);
-      ctx.fillStyle = '#bfffd6'; ctx.fillRect(c.x + 12, c.y - 4, 2, 3);
-      line({ x: c.x + 8, y: c.y + 10 }, { x: c.x + 14, y: c.y + 10 }, 1.8, '#5a3a2c');
     },
     hand(e, h) { circ(h.x, h.y, 5.5, '#c99a7c'); },
     foot(k, ft) { rr(ft.x - 7, ft.y - 10, 24, 11, 4, '#2a2d33'); ctx.fillStyle = '#3bff7f'; ctx.fillRect(ft.x - 6, ft.y - 2, 22, 2); },

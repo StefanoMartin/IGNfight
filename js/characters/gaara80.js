@@ -99,6 +99,8 @@ registerFighter({
     txt(f.posts.toLocaleString('it-IT'), x, y + 6, 14, '#3bff7f', 'center', 'monospace', 0, OL, 'bold');
   },
 
+  face: { skin: '#eab48c', hair: '#3a2418', hairLight: '#7a4a2a', style: 'spiky', eyes: '#2f9a5a', acc: ['neckset'], expr: 'grin' },
+  bust: { base: '#7cc6ee', trim: '#f4f7fb', collar: 'zip', emblem: '80', emblemColor: '#123a5c' },
   look: {
     tw: [15, 18], // torso half-widths at hip / shoulders (for the cel shading pass)
     lw: 13, aw: 12, legC: '#30343c', legD: '#23262d', armC: '#7cc6ee', armD: '#5c9fc7',
@@ -109,24 +111,6 @@ registerFighter({
       const c = lerp(J.hip, J.sh, .25);
       ctx.save(); ctx.translate(c.x + 6, c.y); ctx.rotate(P.lean); ctx.scale(f.face || 1, 1); txt('80', 0, 0, 13, '#123a5c'); ctx.restore();
       rr(J.sh.x - 9, J.sh.y - 4, 18, 7, 3, '#f4f7fb', 2);
-    },
-    head(f, P, J) {
-      const c = J.hc, s = J.sh;
-      circ(c.x, c.y, 16, '#e2ad84');
-      ctx.beginPath(); // spiky hair
-      ctx.moveTo(c.x + 12, c.y - 9); ctx.lineTo(c.x + 6, c.y - 22); ctx.lineTo(c.x + 1, c.y - 15); ctx.lineTo(c.x - 5, c.y - 25);
-      ctx.lineTo(c.x - 9, c.y - 15); ctx.lineTo(c.x - 18, c.y - 20); ctx.lineTo(c.x - 16, c.y - 8); ctx.lineTo(c.x - 21, c.y - 4);
-      ctx.lineTo(c.x - 15, c.y + 4); ctx.lineTo(c.x - 8, c.y - 6); ctx.lineTo(c.x + 4, c.y - 8); ctx.closePath();
-      ctx.fillStyle = '#3a2418'; ctx.fill(); ctx.lineWidth = 2.5; ctx.strokeStyle = OL; ctx.stroke();
-      line({ x: c.x - 12, y: c.y - 12 }, { x: c.x - 2, y: c.y - 17 }, 2, 'rgba(255,200,150,.45)'); // hair shine
-      ell(c.x + 8, c.y - 2, 4, 4.5, 0, '#fff', 1.5); circ(c.x + 9.5, c.y - 2, 2, '#111', 0); circ(c.x + 10.3, c.y - 3, .9, '#fff', 0);
-      line({ x: c.x + 3, y: c.y - 9 }, { x: c.x + 13, y: c.y - 7 }, 2.5, '#2a170e');
-      if (['attack', 'skill', 'super'].includes(f.state)) ell(c.x + 10, c.y + 8, 4, 4, 0, '#5a1010', 1.5); // shouting
-      else line({ x: c.x + 6, y: c.y + 8 }, { x: c.x + 13, y: c.y + 7 }, 2, '#5a2a1a');
-      ctx.lineWidth = 4; ctx.strokeStyle = '#15171c'; // headset around the neck
-      ctx.beginPath(); ctx.arc(s.x, s.y - 4, 11, .15 * Math.PI, .85 * Math.PI); ctx.stroke();
-      circ(s.x + 11, s.y - 2, 5, '#222'); circ(s.x - 11, s.y - 2, 5, '#222');
-      ctx.strokeStyle = '#4ad'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(s.x + 11, s.y - 2, 3, 0, 7); ctx.stroke();
     },
     hand(e, h) { line(lerp(e, h, .72), lerp(e, h, .9), 14, '#f4f7fb'); circ(h.x, h.y, 6, '#e2ad84'); },
     foot(k, ft) { rr(ft.x - 8, ft.y - 11, 27, 12, 5, '#f5f5f5'); ctx.fillStyle = '#d22'; ctx.fillRect(ft.x - 7, ft.y - 2, 25, 3); }

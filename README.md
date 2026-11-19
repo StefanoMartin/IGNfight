@@ -1,6 +1,6 @@
 # 🥊 Forum Fighters — IGN Italia Community Edition
 
-**Version 0.4.0** · [Changelog](CHANGELOG.md)
+**Version 0.5.0** · [Changelog](CHANGELOG.md)
 
 A small Street Fighter–style fighting game starring members of the IGN Italia forum.
 It runs in the browser with plain JavaScript and canvas: no libraries, no build step, no image files.
@@ -69,7 +69,8 @@ js/
     audio.js                synthesized sound effects, announcer voice
     music.js                step sequencer + synth voices for the soundtrack
   render/
-    draw-helpers.js         canvas primitives (outlined shapes, titles, text wrap)
+    draw-helpers.js         canvas primitives, cel shading, manga effects
+    anime-face.js           shared anime head + bust portrait renderer (configured per fighter)
     fighter-render.js       poses -> skeleton -> drawn body, portraits
     stage.js                the living-room background
   game/
@@ -104,7 +105,9 @@ The scripts are plain `<script>` tags (not ES modules) so the game also works wh
 2. Change the data in `registerFighter({...})`:
    - **identity**: `id` (unique), `name`, `spoken` (for the announcer), `tag`, `style`, `win` quotes
    - **stats**: `hp`, `spd`, `jump`, `kbm` (knockback taken), `pow`, `frameData` (speed / damage / reach of normal moves)
-   - **look**: colours and the `torso`, `head`, `hand`, `foot` drawing functions (plus optional `behind`, `armDeco`, `front`)
+   - **face**: anime head config: `skin`, `hair`, `hairLight`, `style` (spiky, wild, quiff, slick, neat, short, cap, hood), `eyes`, `acc` (shades, glasses, headset, neckset, headband, stubble), `expr`
+   - **bust**: portrait clothing: `base`, `trim`, `inner`, `collar` (zip, varsity, track, racing, bomber, blazer, hoodie, vest), `scarf`, `emblem`, `medals`
+   - **look**: colours and the `torso`, `hand`, `foot` drawing functions (plus optional `behind`, `armDeco`, `front`)
    - **moves**: `skillMove(f, o, t, d)` and `superMove(f, o, t, d)` run once per frame while the move is active (`t` = frame number, `d` = scratch data); call `toIdle(f)` when done
    - **ai**: preferred `range`, aggression, and when to use the skill and super
    - **optional hooks** for special mechanics (see the comment at the top of `js/game/registry.js`): e.g. `haste` (Pat's hype), `movesFor` (master94ga's stances), `doubleJump` / `airSkill` (Nkc90), `punishBonus` (Mao-gp)
