@@ -39,8 +39,9 @@ class Fighter {
       anim: Math.random() * 100 | 0, launched: false, rot: 0, say: null,
       inp: {}, prev: {}, tap: {},
       ai: { t: 0, act: 'wait', f: 0, threat: false, blk: false, parry: false, mb: null, kicked: false },
-      hs: 0, bs: 0, stunT: 0, stunIcon: null, cd: null, trail: []
+      hs: 0, bs: 0, stunT: 0, stunIcon: null, cd: null, trail: [], dj: false
     });
+    if (this.ch.onReset) this.ch.onReset(this); // per-fighter round state (hype, stance, ...)
   }
   get air() { return this.y < GY - .5; }
 }

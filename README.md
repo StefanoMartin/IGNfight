@@ -43,6 +43,10 @@ It runs in the browser with plain JavaScript and canvas: no libraries, no build 
 | **menoDZero** | Heavy Counter / Stance | **Parry Stance**: catches an attack and answers with a counter-slash | **Dramatic Exit**: *"Lascio il forum. Per sempre."* Hit him while he walks away and he teleports back: *"Sono tornato!"* |
 | **the.dark.player** | Zoner / Technical | **Code Throw**: hurls a line of raw code. His mechanical keyboard gives his attacks extra reach | **Wall of Text**: a towering wall of paragraphs slides across and crushes the foe into the corner |
 | **Kyle_SR84** | Slow & Heavy Grappler | **Arcade Slam**: unblockable command grab. Super armor on standing punches and kicks | **Backlog Avalanche**: a rift drops his entire unplayed library on your head |
+| **Pat_00** | Momentum / Hype Rushdown | **Hype Leap**: leaping mic slam. Staying on the offensive builds **HYPE** (T-2 → T-1 → LIVE!), which makes his moves and walk faster; getting hit resets it | **World Premiere Drop**: leaps off-screen, a giant theater screen drops behind the arena, then an exploding trophy lands on the foe |
+| **master94ga** | Stance / Weapon Master | **Stance Switch**: cycles ACTION (greatsword: slow, long reach, heavy), RPG (magic staff: his kick casts an orb) and INDIE (dual daggers: very fast) | **100% Platinum Completion**: ticks the last box on his ledger and a spiral of gold and platinum trophies surrounds and launches the foe |
+| **Mao-gp** | Mix-up / Bait-and-Punish | **Feint Dash**: invulnerable dash into a GPU-shield bash, or a retreating feint if you hold back. Punishing a missed attack deals ×1.5 | **3,000-Post Flame War**: a single spark erupts into a pillar of forum fire that traps the foe under a rain of angry replies |
+| **Nkc90** | Agile Aerial Fighter | **Blade Beam**: energy crescent from his controller blade, also usable in mid-air. Has a double jump and floaty jumps | **Direct Shadow-Drop**: a snap of the fingers and a giant red DIRECT banner slams down out of nowhere |
 
 More fighters coming soon.
 
@@ -78,6 +82,10 @@ js/
     menodzero.js
     the-dark-player.js
     kyle-sr84.js
+    pat-00.js
+    master94ga.js
+    mao-gp.js
+    nkc90.js
   scenes/
     title.js  select.js  fight.js  result.js  hud.js
   main.js                   fixed 60 fps update loop
@@ -95,6 +103,7 @@ The scripts are plain `<script>` tags (not ES modules) so the game also works wh
    - **look**: colours and the `torso`, `head`, `hand`, `foot` drawing functions (plus optional `behind`, `armDeco`, `front`)
    - **moves**: `skillMove(f, o, t, d)` and `superMove(f, o, t, d)` run once per frame while the move is active (`t` = frame number, `d` = scratch data); call `toIdle(f)` when done
    - **ai**: preferred `range`, aggression, and when to use the skill and super
+   - **optional hooks** for special mechanics (see the comment at the top of `js/game/registry.js`): e.g. `haste` (Pat's hype), `movesFor` (master94ga's stances), `doubleJump` / `airSkill` (Nkc90), `punishBonus` (Mao-gp)
 3. Add `<script src="js/characters/<new-name>.js"></script>` to `index.html` next to the other characters. The select screen adapts to the roster size automatically.
 
 ---

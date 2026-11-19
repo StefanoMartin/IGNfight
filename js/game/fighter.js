@@ -4,6 +4,7 @@
    ========================================================= */
 
 function land(f) {
+  f.dj = false;
   if (f.state === 'jump') { f.state = 'idle'; f.vx = 0; dust(f.x, GY, 3); }
   else if (f.state === 'attack' && f.atk && f.atk.m.air) { f.atk = null; f.state = 'idle'; f.vx = 0; }
   else if (f.state === 'hit' && f.launched) { f.state = 'knockdown'; f.t = 0; f.launched = false; dust(f.x, GY, 10); SFX.thud(); game.shake = Math.max(game.shake, 4); }
@@ -19,6 +20,7 @@ function updFighter(f, o) {
   if (f.flash > 0) f.flash--;
   if (f.say) { f.say.t++; if (f.say.t > f.say.life) f.say = null; }
   f.meter = Math.min(100, f.meter);
+  if (f.ch.tick) f.ch.tick(f, o); // per-frame character passive
 
   let phys = true;
   switch (f.state) {
@@ -28,16 +30,24 @@ function updFighter(f, o) {
       if (o.x !== f.x) f.face = sgn(o.x - f.x);
       if (T.x && f.meter >= 100) { startSuper(f); break; }
       if (T.s && f.cool <= 0) { startSkill(f); break; }
-      if (I.u) { f.state = 'jump'; f.vy = -f.ch.jump; f.vx = ((I.r ? 1 : 0) - (I.l ? 1 : 0)) * f.ch.spd * 1.15; f.y -= 1; SFX.jump(); break; }
+      if (I.u) { f.state = 'jump'; f.dj = false; f.vy = -f.ch.jump; f.vx = ((I.r ? 1 : 0) - (I.l ? 1 : 0)) * f.ch.spd * 1.15; f.y -= 1; SFX.jump(); break; }
       if (I.d) { f.state = 'crouch'; f.vx = 0; if (T.p) startAtk(f, 'cpunch'); else if (T.k) startAtk(f, 'sweep'); break; }
       if (T.p) { startAtk(f, 'punch'); break; }
       if (T.k) { startAtk(f, 'kick'); break; }
       const dir = (I.r ? 1 : 0) - (I.l ? 1 : 0);
-      f.vx = dir * f.ch.spd * (dir === f.face ? 1 : .75); // walking backwards is slower
+      f.vx = dir * f.ch.spd * (f.ch.speedMul ? f.ch.speedMul(f) : 1) * (dir === f.face ? 1 : .75); // walking backwards is slower
       f.state = dir ? 'walk' : 'idle';
       break;
     }
-    case 'jump': if (fight) { if (T.p) startAtk(f, 'jpunch'); else if (T.k) startAtk(f, 'jkick'); } break;
+    case 'jump':
+      if (!fight) break;
+      if (T.u && f.ch.doubleJump && !f.dj) { // double jump
+        f.dj = true; f.vy = -f.ch.jump * .85; f.vx = ((I.r ? 1 : 0) - (I.l ? 1 : 0)) * f.ch.spd * 1.15;
+        SFX.jump(); spark(f.x, f.y - 10, '#fff', 6);
+      }
+      else if (T.s && f.ch.airSkill && f.cool <= 0) startSkill(f);
+      else if (T.p) startAtk(f, 'jpunch'); else if (T.k) startAtk(f, 'jkick');
+      break;
     case 'attack': runAtk(f, o); break;
     case 'hit':
       f.t++; f.vx *= .9;
@@ -61,8 +71,8 @@ function updFighter(f, o) {
       if (f.ch.states && f.ch.states[f.state]) f.ch.states[f.state](f, o);
   }
 
-  if (phys && !f.data.under) {
-    if (f.air || f.vy < 0) { f.vy += GRAV; f.y += f.vy; }
+  if (phys && !f.data.under && !f.data.noPhys) {
+    if (f.air || f.vy < 0) { f.vy += GRAV * (f.ch.grav || 1); f.y += f.vy; }
     f.x += f.vx;
     if (f.y >= GY) { f.y = GY; const bounced = f.vy > 0 && land(f); if (!bounced) f.vy = 0; }
   }
@@ -72,7 +82,7 @@ function updFighter(f, o) {
 
 /** Fighters can't overlap on the ground */
 function pushApart(a, b) {
-  const skip = f => ['grabbed', 'locked', 'ko', 'knockdown'].includes(f.state) || f.data.under;
+  const skip = f => ['grabbed', 'locked', 'ko', 'knockdown'].includes(f.state) || f.data.under || f.data.hidden;
   if (skip(a) || skip(b) || Math.abs(a.y - b.y) > 70) return;
   const dx = b.x - a.x, min = 48 * (a.ch.scale + b.ch.scale) / 2;
   if (Math.abs(dx) >= min) return;

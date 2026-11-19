@@ -14,8 +14,12 @@
      pose(f,P)   pose for skill / super / custom states
      basePose(P) optional default pose tweak (e.g. hands in pockets)
      ai          {range, aggr, cancel, parry, passiveSkill, superOK(dist,f,o), skillOK(dist,f,o)}
-     optional hooks: intercept(d,a), onHitLanded(a), drawUI(f), states{name(f,o)},
-                     invulnStates[], armor, bodyWidth, lowDuringSkill, winArm, winKeepsPocket
+     optional hooks: intercept(d,a), onHitLanded(a), onGotHit(d), onReset(f), tick(f,o),
+                     onAttackActive(f,name), movesFor(f), haste(f) 0-3, speedMul(f),
+                     drawUI(f), states{name(f,o)}, invulnStates[], armor, bodyWidth,
+                     lowDuringSkill, winArm, winKeepsPocket, punishBonus,
+                     doubleJump, airSkill, grav (gravity multiplier)
+     f.data flags the engine understands: under, hidden, noPhys, sink, holding, bait
    ========================================================= */
 
 const CHARS = [];

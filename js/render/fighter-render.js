@@ -108,6 +108,7 @@ function drawFighterAt(f, P, J, x, y, extraFilter, alpha) {
 }
 
 function drawFighter(f) {
+  if (f.data.hidden) return; // e.g. Pat_00 off-screen during his super
   if (f.data.under) { drawMound(f); return; }
   // ground shadow (+ glow when the super meter is full)
   const k = Math.max(.3, 1 - (GY - f.y) / 300);

@@ -44,10 +44,10 @@ function aiInput(f, o) {
     if (f.meter >= 100 && Math.random() < D.spec && C.superOK(dist, f, o)) act = 'x';
     else if (f.cool <= 0 && Math.random() < D.spec && C.skillOK(dist, f, o)) act = 's';
     else if (dist < (rng > 150 ? 150 : 100) && Math.random() < C.aggr * D.aggr) act = pick(['p', 'k', 'dp', 'dk', 'p', 'k']);
-    else if (dist > rng + 35) act = Math.random() < .08 ? 'jumpin' : 'fwd';
+    else if (dist > rng + 35) act = Math.random() < (C.jumpRate || .08) ? 'jumpin' : 'fwd';
     else if (dist < rng - 35 && rng > 150) act = 'back';
-    else act = Math.random() < .1 ? 'jumpin' : Math.random() < .5 ? 'fwd' : 'wait';
-    A.act = act; A.f = 0; A.kicked = false;
+    else act = Math.random() < (C.jumpRate || .1) ? 'jumpin' : Math.random() < .5 ? 'fwd' : 'wait';
+    A.act = act; A.f = 0; A.kicked = false; A.dj = false;
   }
   A.f++;
 
@@ -57,6 +57,8 @@ function aiInput(f, o) {
     case 'back': I[aw] = 1; break;
     case 'jumpin':
       if (!f.air && A.f < 3) { I.u = 1; I[tw] = 1; }
+      else if (f.air && f.ch.doubleJump && !A.dj && f.vy > -3) { I.u = 1; I[tw] = 1; A.dj = true; }
+      else if (f.air && f.ch.airSkill && f.cool <= 0 && dist > 150 && Math.random() < D.spec) I.s = 1;
       else if (f.air && dist < 140 && !A.kicked) { I.k = 1; A.kicked = true; }
       break;
     case 'p': if (A.f === 1) I.p = 1; break;

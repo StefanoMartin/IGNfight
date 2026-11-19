@@ -25,10 +25,10 @@ function titleStep() {
 function drawTitle() {
   ctx.drawImage(BG, 0, 0); dim(.55);
   focusLines(480, 120, 230, 'rgba(255,220,120,.16)', 70);
-  const n = CHARS.length, gap = Math.min(150, 760 / n), x0 = 480 - (n - 1) * gap / 2;
+  const n = CHARS.length, gap = Math.min(150, 900 / n), size = Math.min(96, gap - 8), x0 = 480 - (n - 1) * gap / 2;
   CHARS.forEach((c, i) => {
-    drawPortrait(c, x0 + i * gap - 48, 392, 96, false, false);
-    txt(c.name, x0 + i * gap, 500, 15, '#fff', 'center', FONT, 4);
+    drawPortrait(c, x0 + i * gap - size / 2, 488 - size, size, false, false);
+    txt(c.name, x0 + i * gap, 500, Math.min(15, gap / 6.5), '#fff', 'center', FONT, 4);
   });
   const b = Math.sin(frame * .05) * 3;
   bigText('FORUM', 480, 78 + b, 84, -.18); bigText('FIGHTERS', 480, 150 + b, 84, -.18);
@@ -55,13 +55,12 @@ function drawHelp() {
     ['CROUCH', 'Down + Punch = low jab · Down + Kick = sweep (knockdown)']
   ];
   rows.forEach(([a, b], i) => { txt(a, 90, 96 + i * 30, 17, '#ffd23a', 'left', FONT); txt(b, 210, 96 + i * 30, 15, '#fff', 'left', 'sans-serif'); });
-  const step = Math.min(38, 190 / CHARS.length);
-  CHARS.forEach((c, i) => {
-    const y = 318 + i * step;
-    drawPortrait(c, 60, y - 16, 32, false, false);
-    txt(c.name, 104, y - 7, 16, c.uiColor, 'left', FONT); txt(c.style, 104, y + 10, 11, '#bbb', 'left', 'sans-serif');
-    txt('SKILL ' + c.skill + ': ' + c.skillDesc, 300, y - 7, 12, '#ddd', 'left', 'sans-serif');
-    txt('SUPER ' + c.super + ': ' + c.superDesc, 300, y + 10, 12, '#ddd', 'left', 'sans-serif');
+  const rowsPerCol = Math.ceil(CHARS.length / 2), step = Math.min(40, 196 / rowsPerCol);
+  CHARS.forEach((c, i) => { // two columns: name, style, skill and super names (full descriptions are on the select screen)
+    const col = i < rowsPerCol ? 0 : 1, x = 50 + col * 450, y = 312 + (i % rowsPerCol) * step;
+    drawPortrait(c, x, y - 15, 30, false, false);
+    txt(c.name, x + 40, y - 7, 15, c.uiColor, 'left', FONT); txt(c.style, x + 175, y - 7, 11, '#bbb', 'left', 'sans-serif');
+    txt('Skill: ' + c.skill + '   ·   Super: ' + c.super, x + 40, y + 9, 11, '#ddd', 'left', 'sans-serif');
   });
   txt('ENTER / ESC to close', 480, 526, 13, '#a99bd0', 'center', 'sans-serif');
 }

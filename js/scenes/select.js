@@ -75,7 +75,7 @@ function drawSelect() {
   }
 
   // portrait grid (adapts to roster size)
-  const n = CHARS.length, size = Math.min(110, 720 / n - 14), gap = size + 14, x0 = 480 - (n * gap - 14) / 2;
+  const n = CHARS.length, size = Math.min(110, 900 / n - 12), gap = size + 12, x0 = 480 - (n * gap - 12) / 2;
   for (let k = 0; k < n; k++) {
     const x = x0 + k * gap, y = 378;
     drawPortrait(CHARS[k], x, y, size, false, false);
@@ -84,7 +84,7 @@ function drawSelect() {
       ctx.strokeStyle = col; ctx.lineWidth = pul + 1; ctx.strokeRect(x - i * 4 + 2, y - i * 4 + 2, size + i * 8 - 4, size + i * 8 - 4);
       txt(i ? (game.mode ? 'P2' : 'CPU') : 'P1', x + (i ? size - 14 : 14), y + 12, 15, col, 'center', FONT, 3);
     }
-    txt(CHARS[k].name, x + size / 2, y + size - 10, 12, '#fff', 'center', FONT, 3);
+    txt(CHARS[k].name, x + size / 2, y + size - 8, Math.min(12, size / 6), '#fff', 'center', FONT, 3);
   }
 
   if (s.lock[0] && s.lock[1]) { if ((frame >> 3) & 1) bigText('GET READY!', 480, 250, 46); }

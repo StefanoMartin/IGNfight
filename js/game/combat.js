@@ -7,7 +7,7 @@ function hittable(o) {
   return o.inv <= 0
     && !['knockdown', 'getup', 'ko', 'win'].includes(o.state)
     && !(o.ch.invulnStates || []).includes(o.state)
-    && !o.data.under;
+    && !o.data.under && !o.data.hidden;
 }
 
 /** Hitbox [x, y, w, h] (relative to the feet, facing right) -> world rectangle */
@@ -70,6 +70,10 @@ function hitRes(a, d, m, box, dir) {
   // clean hit
   let dm = m.dmg;
   if (!m.noScale) dm *= Math.max(.35, 1 - .12 * a.combo);
+  // whiff punish bonus (Mao-gp): hitting someone stuck in the recovery of a missed attack
+  if (a.ch.punishBonus && d.state === 'attack' && d.atk && !d.atk.hit && d.atk.fr > d.atk.m.su + d.atk.m.ac) {
+    dm *= a.ch.punishBonus; popText(d.x, d.y - 185, 'PUNISH!', '#ff4a3a', 26);
+  }
   a.combo++; hurtHP(d, dm);
   a.meter += dm * .2; d.meter += dm * .14;
   if (a.ch.onHitLanded) a.ch.onHitLanded(a);
@@ -82,6 +86,7 @@ function hitRes(a, d, m, box, dir) {
     if (m.kd) { d.vy = Math.min(d.vy, -5); d.launched = true; if (d.y >= GY) d.y = GY - 1; }
   }
 
+  if (d.ch.onGotHit) d.ch.onGotHit(d);
   d.flash = 6;
   const big = dm >= 60;
   hitstop(big ? 9 : 6); game.shake = Math.max(game.shake, big ? 7 : 3);
@@ -109,7 +114,7 @@ function onKO(d, a) {
 
 /* ---------- normal attacks ---------- */
 function startAtk(f, name, m) {
-  m = m || f.ch.moves[name];
+  m = m || (f.ch.movesFor ? f.ch.movesFor(f) : f.ch.moves)[name]; // movesFor: stance-based move sets
   f.atk = { name, m, fr: 0, hit: false, id: ++game.aid };
   f.state = 'attack'; f.t = 0;
   if (f.ch.armor && (name === 'kick' || name === 'punch')) f.armor = 1;
@@ -120,9 +125,12 @@ function runAtk(f, o) {
   const a = f.atk; if (!a) { toIdle(f); return; }
   const m = a.m;
   a.fr++;
+  // haste (Pat_00's hype): skip some startup / recovery frames, never the active ones
+  const haste = f.ch.haste ? f.ch.haste(f) : 0;
+  if (haste && (a.fr < m.su - 1 || a.fr > m.su + m.ac) && a.fr % (5 - haste) === 0) a.fr++;
   if (!m.air && !f.air) f.vx *= .8;
   if (a.fr > m.su) f.armor = 0;
-  if (a.fr === m.su + 1) SFX.whoosh();
+  if (a.fr === m.su + 1) { SFX.whoosh(); if (f.ch.onAttackActive) f.ch.onAttackActive(f, a.name); }
   if (!a.hit && a.fr > m.su && a.fr <= m.su + m.ac) {
     const r = tryHit(f, o, m.hb, m);
     if (f.atk !== a) return; // interrupted (e.g. parried)

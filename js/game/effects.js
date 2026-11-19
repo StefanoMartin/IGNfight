@@ -67,6 +67,7 @@ function drawParticles() {
 
 /** Things drawn above a fighter: character UI, stun icon, speech bubble */
 function drawWorldUI(f) {
+  if (f.data.hidden) return;
   if (f.ch.drawUI && !f.data.under) f.ch.drawUI(f);
 
   if (f.state === 'stun') {
